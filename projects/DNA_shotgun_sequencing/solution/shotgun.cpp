@@ -29,5 +29,15 @@ int main (int argc, char* argv[])
 
   std::cerr << "read " << fragments.size() << " fragments\n";
 
+  double sum = 0.0;
+  auto min = fragments[0].size();
+  auto max = fragments[0].size();
+  for (const auto& f : fragments) {
+    sum += f.size();
+    min = std::min (min, f.size());
+    max = std::max (max, f.size());
+  }
+  std::cerr << "mean fragment length: " << sum/fragments.size() << ", range [ " << min << " " << max << " ]\n";
+
   return 0;
 }
