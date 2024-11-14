@@ -5,8 +5,8 @@
 
 int main (int argc, char* argv[])
 {
-  if (argc < 2) {
-    std::cerr << "ERROR: expected filename as first argument\n";
+  if (argc < 3) {
+    std::cerr << "ERROR: missing arguments - expected 2 arguments: input_fragments output_sequence\n";
     return 1;
   }
   std::cerr << "reading fragments from file \"" << argv[1] << "\"...\n";
@@ -50,6 +50,19 @@ int main (int argc, char* argv[])
   }
   std::string sequence = fragments[index_of_longest];
   std::cerr << "initial sequence has size " << sequence.size() << "\n";
+
+
+  std::cerr << "writing sequence to file \"" << argv[2] << "\"...\n";
+  std::ofstream outfile (argv[2]);
+  if (!outfile) {
+    std::cerr << "ERROR: failed to open output file \"" << argv[2] << "\" - aborting\n";
+    return 1;
+  }
+  outfile << sequence << "\n";
+  if (!outfile) {
+    std::cerr << "ERROR: error occurred while writing to output file \"" << argv[2] << "\" - aborting\n";
+    return 1;
+  }
 
   return 0;
 }
