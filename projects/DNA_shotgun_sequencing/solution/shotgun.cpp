@@ -39,5 +39,17 @@ int main (int argc, char* argv[])
   }
   std::cerr << "mean fragment length: " << sum/fragments.size() << ", range [ " << min << " " << max << " ]\n";
 
+
+  unsigned int size_of_longest = 0;
+  unsigned int index_of_longest = 0;
+  for (unsigned int n = 0; n < fragments.size(); ++n) {
+    if (fragments[n].size() > size_of_longest) {
+      index_of_longest = n;
+      size_of_longest = fragments[n].size();
+    }
+  }
+  std::string sequence = fragments[index_of_longest];
+  std::cerr << "initial sequence has size " << sequence.size() << "\n";
+
   return 0;
 }
