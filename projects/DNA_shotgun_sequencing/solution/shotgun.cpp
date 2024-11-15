@@ -20,8 +20,19 @@ int main (int argc, char* argv[])
     auto sequence = extract_longest_fragment (fragments);
     std::cerr << "initial sequence has size " << sequence.size() << "\n";
 
-    auto overlap = compute_overlap (sequence, fragments[12]);
-    std::cerr << "computed overlap = " << overlap << "\n";
+    int biggest_overlap = 0;
+    int fragment_with_biggest_overlap = -1;
+    for (int n = 0; n < static_cast<int> (fragments.size()); ++n) {
+      const auto overlap = compute_overlap (sequence, fragments[n]);
+      if (std::abs (biggest_overlap) < std::abs (overlap)) {
+        biggest_overlap = overlap;
+        fragment_with_biggest_overlap = n;
+      }
+    }
+
+    if (fragment_with_biggest_overlap >= 0)
+      std::cerr << "fragment with biggest overlap is at index " << fragment_with_biggest_overlap
+        << ", overlap = " << biggest_overlap << "\n";
 
     write_sequence (argv[2], sequence);
 
