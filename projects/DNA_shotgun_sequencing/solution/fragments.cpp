@@ -40,7 +40,7 @@ void fragment_statistics (const std::vector<std::string>& fragments)
     min = std::min (min, f.size());
     max = std::max (max, f.size());
   }
-  std::cerr << "mean fragment length: " << sum/fragments.size() << ", range [ " << min << " " << max << " ]\n";
+  std::cerr << fragments.size() << " fragments, mean fragment length: " << sum/fragments.size() << ", range [ " << min << " " << max << " ]\n";
 }
 
 
@@ -59,3 +59,23 @@ void write_sequence (const std::string& filename, const std::string& sequence)
     throw std::runtime_error ("error occurred while writing to output file \"" + filename + "\"");
 }
 
+
+
+
+std::string extract_longest_fragment (std::vector<std::string>& fragments)
+{
+  unsigned int size_of_longest = 0;
+  unsigned int index_of_longest = 0;
+
+  for (unsigned int n = 0; n < fragments.size(); ++n) {
+    if (fragments[n].size() > size_of_longest) {
+      index_of_longest = n;
+      size_of_longest = fragments[n].size();
+    }
+  }
+
+  std::string longest_fragment = fragments[index_of_longest];
+  fragments.erase (fragments.begin()+index_of_longest);
+
+  return longest_fragment;
+}

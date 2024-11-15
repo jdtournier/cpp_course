@@ -16,16 +16,9 @@ int main (int argc, char* argv[])
     auto fragments = load_fragments (argv[1]);
     fragment_statistics (fragments);
 
-    unsigned int size_of_longest = 0;
-    unsigned int index_of_longest = 0;
-    for (unsigned int n = 0; n < fragments.size(); ++n) {
-      if (fragments[n].size() > size_of_longest) {
-        index_of_longest = n;
-        size_of_longest = fragments[n].size();
-      }
-    }
-    std::string sequence = fragments[index_of_longest];
+    auto sequence = extract_longest_fragment (fragments);
     std::cerr << "initial sequence has size " << sequence.size() << "\n";
+    fragment_statistics (fragments);
 
     write_sequence (argv[2], sequence);
 
