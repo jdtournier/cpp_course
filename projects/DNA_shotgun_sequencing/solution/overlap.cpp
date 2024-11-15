@@ -42,6 +42,22 @@ int compute_overlap (const std::string& sequence, const std::string& fragment)
 
 
 
+Overlap find_biggest_overlap (const std::string& sequence, std::vector<std::string>& fragments)
+{
+  int biggest_overlap = 0;
+  int fragment_with_biggest_overlap = -1;
+  for (unsigned int n = 0; n < fragments.size(); ++n) {
+    const auto overlap = compute_overlap (sequence, fragments[n]);
+    if (std::abs (biggest_overlap) < std::abs (overlap)) {
+      biggest_overlap = overlap;
+      fragment_with_biggest_overlap = n;
+    }
+  }
+
+  return { biggest_overlap, fragment_with_biggest_overlap };
+}
+
+
 
 void merge (std::string& sequence, const std::string& fragment, const int overlap)
 {

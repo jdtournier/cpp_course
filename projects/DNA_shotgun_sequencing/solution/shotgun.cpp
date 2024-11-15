@@ -29,26 +29,18 @@ int main (int argc, char* argv[])
       debug::log ("---------------------------------------------------");
       debug::log (std::to_string (fragments.size()) + " fragments left");
 
-      int biggest_overlap = 0;
-      int fragment_with_biggest_overlap = -1;
-      for (int n = 0; n < static_cast<int> (fragments.size()); ++n) {
-        const auto overlap = compute_overlap (sequence, fragments[n]);
-        if (std::abs (biggest_overlap) < std::abs (overlap)) {
-          biggest_overlap = overlap;
-          fragment_with_biggest_overlap = n;
-        }
-      }
+      auto overlap = find_biggest_overlap (sequence, fragments);
 
       // if no fragments found that overlap, or if largest overlap found is
       // less than 10, stop algorithm:
-      if (fragment_with_biggest_overlap < 0 || std::abs (biggest_overlap) < 10)
+      if (overlap.fragment < 0 || std::abs (overlap.size) < 10)
         break;
 
       debug::log (std::format ("fragment with biggest overlap is at index {}, overlap = {}",
-            fragment_with_biggest_overlap, biggest_overlap));
+            overlap.fragment, overlap.size));
 
-      merge (sequence, fragments[fragment_with_biggest_overlap], biggest_overlap);
-      fragments.erase (fragments.begin() + fragment_with_biggest_overlap);
+      merge (sequence, fragments[overlap.fragment], overlap.size);
+      fragments.erase (fragments.begin() + overlap.fragment);
     }
 
     debug::log (std::format ("{} fragments remaining unmatched - checking whether already contained in sequence...",
