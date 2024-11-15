@@ -30,9 +30,11 @@ int main (int argc, char* argv[])
       }
     }
 
-    if (fragment_with_biggest_overlap >= 0)
+    if (fragment_with_biggest_overlap >= 0) {
       std::cerr << "fragment with biggest overlap is at index " << fragment_with_biggest_overlap
         << ", overlap = " << biggest_overlap << "\n";
+      merge (sequence, fragments[fragment_with_biggest_overlap], biggest_overlap);
+    }
 
     write_sequence (argv[2], sequence);
 

@@ -44,3 +44,17 @@ int compute_overlap (const std::string& sequence, const std::string& fragment)
   return largest_overlap;
 }
 
+
+
+
+
+void merge (std::string& sequence, const std::string& fragment, const int overlap)
+{
+  if (overlap < 0) {
+    sequence += fragment.substr (-overlap);
+  }
+  else if (overlap > 0) {
+    sequence = fragment.substr (0, fragment.size()-overlap) + sequence;
+  }
+}
+
