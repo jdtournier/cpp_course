@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "fragments.h"
+#include "overlap.h"
 
 int main (int argc, char* argv[])
 {
@@ -18,7 +19,8 @@ int main (int argc, char* argv[])
 
     auto sequence = extract_longest_fragment (fragments);
     std::cerr << "initial sequence has size " << sequence.size() << "\n";
-    fragment_statistics (fragments);
+
+    std::cerr << "computed overlap = " << compute_overlap (sequence, fragments[12]) << "\n";
 
     write_sequence (argv[2], sequence);
 
