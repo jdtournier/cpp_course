@@ -4,6 +4,7 @@
 
 #include "overlap.h"
 #include "fragments.h"
+#include "debug.h"
 
 int compute_overlap (const std::string& sequence, const std::string& fragment)
 {
