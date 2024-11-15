@@ -14,16 +14,33 @@ int compute_overlap (const std::string& sequence, const std::string& fragment)
   std::cerr << "sequence is \"" << sequence << "\"\n";
   std::cerr << "trying fragment \"" << fragment << "\"\n";
 
+  int largest_overlap = 0;
+
   // Start from the largest overlap, and decrease size of overlap at each
   // iteration. This guarantees we stop as soon as we find the largest overlap:
   for (int overlap = fragment.size(); overlap > 0; --overlap) {
     const auto seq_start = sequence.substr(0, overlap);
     const auto frag_end = fragment.substr(fragment.size()-overlap);
     //std::cerr << "  overlap = " << overlap << ": seq " << seq_start << ", fragment " << frag_end << "\n";
-    if (seq_start == frag_end)
-      return overlap;
+    if (seq_start == frag_end) {
+      largest_overlap = overlap;
+      break;
+    }
   }
 
-  return 0;
+  // We are going to allow the overlap to be negative, in which case it would
+  // be interpreted as corresponding to the overlap from the end of the
+  // sequence:
+  for (int overlap = fragment.size(); overlap > largest_overlap; --overlap) {
+    const auto seq_end = sequence.substr(sequence.size() - overlap);
+    const auto frag_start = fragment.substr(0, overlap);
+    //std::cerr << "  overlap = " << overlap << ": seq " << seq_end << ", fragment " << frag_start << "\n";
+    if (seq_end == frag_start) {
+      largest_overlap = -overlap;
+      break;
+    }
+  }
+
+  return largest_overlap;
 }
 
