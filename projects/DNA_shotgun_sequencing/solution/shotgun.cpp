@@ -20,7 +20,8 @@ int main (int argc, char* argv[])
     auto sequence = extract_longest_fragment (fragments);
     std::cerr << "initial sequence has size " << sequence.size() << "\n";
 
-    std::cerr << "computed overlap = " << compute_overlap (sequence, fragments[12]) << "\n";
+    auto overlap = compute_overlap (sequence, fragments[12]);
+    std::cerr << "computed overlap = " << overlap << "\n";
 
     write_sequence (argv[2], sequence);
 
