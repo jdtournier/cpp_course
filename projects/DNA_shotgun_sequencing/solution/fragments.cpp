@@ -4,11 +4,13 @@
 #include <string>
 #include <stdexcept>
 
+#include "debug.h"
 #include "fragments.h"
 
 std::vector<std::string> load_fragments (const std::string& filename)
 {
-  std::cerr << "reading fragments from file \"" << filename << "\"...\n";
+  if (debug::verbose)
+    std::cerr << "reading fragments from file \"" << filename << "\"...\n";
 
   std::ifstream infile (filename);
   if (!infile)
@@ -22,7 +24,8 @@ std::vector<std::string> load_fragments (const std::string& filename)
   if (fragments.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no fragments");
 
-  std::cerr << "read " << fragments.size() << " fragments\n";
+  if (debug::verbose)
+    std::cerr << "read " << fragments.size() << " fragments\n";
 
   return fragments;
 }
@@ -48,7 +51,9 @@ void fragment_statistics (const std::vector<std::string>& fragments)
 
 void write_sequence (const std::string& filename, const std::string& sequence)
 {
-  std::cerr << "writing sequence to file \"" << filename << "\"...\n";
+  if (debug::verbose)
+    std::cerr << "writing sequence to file \"" << filename << "\"...\n";
+
   std::ofstream outfile (filename);
   if (!outfile)
     throw std::runtime_error ("failed to open output file \"" + filename + "\"");
