@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <format>
+#include <string_view>
 
 #include "fragments.h"
 #include "shotgun_sequencer.h"
@@ -72,8 +73,8 @@ int ShotgunSequencer::compute_overlap (const std::string& fragment) const
   // Start from the largest overlap, and decrease size of overlap at each
   // iteration. This guarantees we stop as soon as we find the largest overlap:
   for (int overlap = fragment.size(); overlap > 0; --overlap) {
-    const auto seq_start = m_sequence.substr(0, overlap);
-    const auto frag_end = fragment.substr(fragment.size()-overlap);
+    const auto seq_start = std::string_view (m_sequence).substr(0, overlap);
+    const auto frag_end = std::string_view (fragment).substr(fragment.size()-overlap);
     if (seq_start == frag_end) {
       largest_overlap = overlap;
       break;
@@ -84,8 +85,8 @@ int ShotgunSequencer::compute_overlap (const std::string& fragment) const
   // be interpreted as corresponding to the overlap from the end of the
   // sequence:
   for (int overlap = fragment.size(); overlap > 0; --overlap) {
-    const auto seq_end = m_sequence.substr(m_sequence.size() - overlap);
-    const auto frag_start = fragment.substr(0, overlap);
+    const auto seq_end = std::string_view (m_sequence).substr(m_sequence.size() - overlap);
+    const auto frag_start = std::string_view (fragment).substr(0, overlap);
     if (seq_end == frag_start) {
       if (overlap > std::abs (largest_overlap))
         largest_overlap = -overlap;
