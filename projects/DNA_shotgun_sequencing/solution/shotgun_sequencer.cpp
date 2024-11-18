@@ -8,10 +8,8 @@
 #include "debug.h"
 
 
-
-void ShotgunSequencer::init (const std::vector<std::string>& fragments)
+void ShotgunSequencer::init ()
 {
-  m_fragments = fragments;
   if (debug::verbose)
     fragment_statistics (m_fragments);
   m_sequence = extract_longest_fragment (m_fragments);
@@ -61,4 +59,5 @@ void ShotgunSequencer::check_remaining_fragments ()
   else
     debug::log ("all remaining fragments matched OK");
 }
+
 
