@@ -18,10 +18,7 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
-    auto fragments = load_fragments (argv[1]);
-
-    ShotgunSequencer solver (10);
-    solver.init (fragments);
+    ShotgunSequencer solver (argv[1], 10);
 
     std::cerr << "initial sequence has size " << solver.sequence().size() << "\n";
 
@@ -31,7 +28,7 @@ int main (int argc, char* argv[])
 
     std::cerr << "final sequence has length " << solver.sequence().size() << "\n";
 
-    write_sequence (argv[2], solver.sequence());
+    solver.save (argv[2]);
 
   } // end of main processing
 
