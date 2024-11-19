@@ -38,5 +38,14 @@ class ShotgunSequencer {
     const int m_minimum_overlap;
     std::string m_sequence;
     std::vector<std::string> m_fragments;
+
+    struct Overlap {
+      int size;
+      int fragment;
+    };
+
+    int compute_overlap (const std::string& fragment) const;
+    Overlap find_biggest_overlap () const;
+    void merge (const std::string& fragment, const int overlap);
 };
 
