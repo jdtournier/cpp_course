@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <format>
+#include <vector>
 
 #include "debug.h"
 #include "pgm.h"
@@ -25,6 +26,16 @@ int load_pgm (const std::string& filename)
   debug::log (std::format (
         "PGM file \"{}\" contains {}x{} image with maximum value {}",
         filename, xdim, ydim, maxval));
+
+  int val;
+  std::vector<int> data;
+  while (infile >> val)
+    data.push_back (val);
+
+  if (static_cast<int>(data.size()) != xdim * ydim)
+    throw std::runtime_error (std::format (
+          "amount of data in PGM file \"{}\" ({}) does not match dimensions ({}x{})",
+          filename, data.size(), xdim, ydim));
 
   return 0;
 }
