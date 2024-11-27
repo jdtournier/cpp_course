@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "debug.h"
+#include "pgm.h"
 
 int main (int argc, char* argv[])
 {
@@ -14,6 +15,7 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
+    auto slice = load_pgm (argv[1]);
 
   } // end of main processing
 
