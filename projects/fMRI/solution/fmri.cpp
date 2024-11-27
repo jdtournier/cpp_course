@@ -1,5 +1,9 @@
 #include <iostream>
 #include <stdexcept>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <format>
 
 #include "debug.h"
 #include "pgm.h"
@@ -16,6 +20,8 @@ int main (int argc, char* argv[])
   try { // Start of main processing:
 
     auto slice = load_pgm (argv[1]);
+
+    std::cerr << std::format ("image \"{}\" loaded, size {}x{}\n", argv[1], slice.width(), slice.height());
 
   } // end of main processing
 

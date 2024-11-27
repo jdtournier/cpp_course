@@ -7,7 +7,7 @@
 #include "debug.h"
 #include "pgm.h"
 
-int load_pgm (const std::string& filename)
+Image load_pgm (const std::string& filename)
 {
   debug::log ("loading PGM file \"" + filename + "\"...");
 
@@ -37,5 +37,7 @@ int load_pgm (const std::string& filename)
           "amount of data in PGM file \"{}\" ({}) does not match dimensions ({}x{})",
           filename, data.size(), xdim, ydim));
 
-  return 0;
+  Image image (xdim, ydim, data);
+
+  return image;
 }

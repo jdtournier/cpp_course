@@ -2,4 +2,6 @@
 
 #include <string>
 
-int load_pgm (const std::string& filename);
+#include "image.h"
+
+Image load_pgm (const std::string& filename);
