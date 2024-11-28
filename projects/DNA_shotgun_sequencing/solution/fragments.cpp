@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <format>
 
 #include "debug.h"
 #include "fragments.h"
@@ -23,7 +24,7 @@ std::vector<std::string> load_fragments (const std::string& filename)
   if (fragments.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no fragments");
 
-  debug::log ("read " + std::to_string (fragments.size()) + " fragments");
+  debug::log (std::format ("read {} fragments", fragments.size()));
 
   return fragments;
 }
@@ -41,7 +42,8 @@ void fragment_statistics (const std::vector<std::string>& fragments)
     min = std::min (min, f.size());
     max = std::max (max, f.size());
   }
-  std::cerr << fragments.size() << " fragments, mean fragment length: " << sum/fragments.size() << ", range [ " << min << " " << max << " ]\n";
+  std::cerr << std::format ("{} fragments, mean fragment length: {}, range [ {} {} ]\n",
+      fragments.size(), sum/fragments.size(), min, max);
 }
 
 
