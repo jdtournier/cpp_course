@@ -23,6 +23,10 @@ int main (int argc, char* argv[])
 
     std::cerr << std::format ("image \"{}\" loaded, size {}x{}\n", argv[1], slice.width(), slice.height());
 
+    int x = slice.width()/2;
+    int y = slice.height()/2;
+    std::cerr << std::format ("image value at pixel ({},{}) = {}\n", x, y, slice.get (x,y));
+
   } // end of main processing
 
   // error handling from here:
