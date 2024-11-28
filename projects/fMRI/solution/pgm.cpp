@@ -37,7 +37,5 @@ Image load_pgm (const std::string& filename)
           "amount of data in PGM file \"{}\" ({}) does not match dimensions ({}x{})",
           filename, data.size(), xdim, ydim));
 
-  Image image (xdim, ydim, data);
-
-  return image;
+  return { xdim, ydim, data };
 }
