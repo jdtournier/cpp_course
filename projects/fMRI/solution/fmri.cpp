@@ -7,6 +7,7 @@
 
 #include "debug.h"
 #include "pgm.h"
+#include "dataset.h"
 
 int main (int argc, char* argv[])
 {
@@ -19,27 +20,17 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
-    std::vector<Image> slices;
-    for (unsigned int n = 1; n < argc; ++n)
-      slices.push_back (load_pgm (argv[n]));
+    // We use aggregate initialisation to construct the
+    // std::vector<std::string> argument expected by the Dataset constructor,
+    // relying one of the std::vector constructors:
+    Dataset data ({ argv+1, argv+argc });
 
-    // check that dimensions all match up:
-    for (unsigned int n = 1; n < slices.size(); ++n) {
-      if ( (slices[n].width() != slices[n-1].width()) ||
-          (slices[n].height() != slices[n-1].height()) )
-        throw std::runtime_error ("dimensions do not match across slices");
-    }
-
-    std::cerr << std::format (
-        "loaded {} slices of size {}x{}\n",
-        slices.size(), slices[0].width(), slices[0].height());
-
-    int x = slices[0].width()/2;
-    int y = slices[0].height()/2;
+    int x = data.get(0).width()/2;
+    int y = data.get(0).height()/2;
 
     std::cerr << std::format ("image values at pixel ({},{}) = [ ", x, y);
-    for (const auto& slice : slices)
-      std::cerr << slice.get (x,y) << " ";
+    for (const auto& val : data.get_timecourse (x,y))
+      std::cerr << val << " ";
     std::cerr << "]\n";
 
   } // end of main processing
