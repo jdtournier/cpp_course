@@ -19,13 +19,28 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
-    auto slice = load_pgm (argv[1]);
+    std::vector<Image> slices;
+    for (unsigned int n = 1; n < argc; ++n)
+      slices.push_back (load_pgm (argv[n]));
 
-    std::cerr << std::format ("image \"{}\" loaded, size {}x{}\n", argv[1], slice.width(), slice.height());
+    // check that dimensions all match up:
+    for (unsigned int n = 1; n < slices.size(); ++n) {
+      if ( (slices[n].width() != slices[n-1].width()) ||
+          (slices[n].height() != slices[n-1].height()) )
+        throw std::runtime_error ("dimensions do not match across slices");
+    }
 
-    int x = slice.width()/2;
-    int y = slice.height()/2;
-    std::cerr << std::format ("image value at pixel ({},{}) = {}\n", x, y, slice.get (x,y));
+    std::cerr << std::format (
+        "loaded {} slices of size {}x{}\n",
+        slices.size(), slices[0].width(), slices[0].height());
+
+    int x = slices[0].width()/2;
+    int y = slices[0].height()/2;
+
+    std::cerr << std::format ("image values at pixel ({},{}) = [ ", x, y);
+    for (const auto& slice : slices)
+      std::cerr << slice.get (x,y) << " ";
+    std::cerr << "]\n";
 
   } // end of main processing
 
