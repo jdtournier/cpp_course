@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <format>
 
+#include <termviz.h>
+
 #include "debug.h"
 #include "pgm.h"
 #include "dataset.h"
@@ -71,6 +73,8 @@ int main (int argc, char* argv[])
     for (const auto& val : data.get_timecourse (pixel.x, pixel.y))
       std::cerr << val << " ";
     std::cerr << "]\n";
+
+    termviz::figure().plot (data.get_timecourse (pixel.x, pixel.y));
 
   } // end of main processing
 
