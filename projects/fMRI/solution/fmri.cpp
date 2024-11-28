@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <fstream>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -10,6 +11,7 @@
 #include "debug.h"
 #include "pgm.h"
 #include "dataset.h"
+#include "task.h"
 
 
 struct Pixel {
@@ -47,8 +49,8 @@ int main (int argc, char* argv[])
 {
   debug::set_verbose_mode (argc, argv);
 
-  if (argc < 2) {
-    std::cerr << "ERROR: missing arguments - expected 1 arguments: image\n";
+  if (argc < 3) {
+    std::cerr << "ERROR: missing arguments - expected least 2 arguments: taskfile followed by list of images\n";
     return 1;
   }
 
@@ -58,10 +60,14 @@ int main (int argc, char* argv[])
     // from the list of arguments (if present) before constructing the Dataset:
     auto pixel = get_pixel_cmdline (argc, argv);
 
+    auto task = load_task (argv[1]);
+
     // We use aggregate initialisation to construct the
     // std::vector<std::string> argument expected by the Dataset constructor,
     // relying one of the std::vector constructors:
-    Dataset data ({ argv+1, argv+argc });
+    Dataset data ({ argv+2, argv+argc });
+    if (task.size() != data.size())
+      throw std::runtime_error ("number of time points in task file does not match dataset");
 
     // default values if x & y not set (<0):
     if (pixel.x < 0 || pixel.y < 0)
@@ -69,12 +75,8 @@ int main (int argc, char* argv[])
     else if (pixel.x >= data.get(0).width() || pixel.y >= data.get(0).height())
       throw std::runtime_error ("pixel position is out of bounds");
 
-    std::cerr << std::format ("image values at pixel ({},{}) = [ ", pixel.x, pixel.y);
-    for (const auto& val : data.get_timecourse (pixel.x, pixel.y))
-      std::cerr << val << " ";
-    std::cerr << "]\n";
-
     termviz::figure().plot (data.get_timecourse (pixel.x, pixel.y));
+    termviz::figure().plot (task);
 
   } // end of main processing
 
