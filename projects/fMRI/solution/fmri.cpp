@@ -9,6 +9,38 @@
 #include "pgm.h"
 #include "dataset.h"
 
+
+struct Pixel {
+  int x = -1;
+  int y = -1;
+};
+
+Pixel get_pixel_cmdline (int& argc, char* argv[])
+{
+  for (int n = 1; n < argc; n++) {
+    if (argv[n] == std::string("-p")) {
+      if (argc-n < 3)
+        throw std::runtime_error ("not enough arguments to '-p' option (expected '-p x y')");
+      argc -= 3;
+      Pixel p { std::stoi (argv[n+1]), std::stoi (argv[n+2]) };
+      debug::log (std::format ("pixel position set manually to ({}, {}) via command-line", p.x, p.y));
+      // shuffle all remaining arguments back 3 places, effectively removing
+      // the option and its arguments from the argument list:
+      for (int m = n; m < argc; m++)
+        argv[m] = argv[m+3];
+
+      return p;
+    }
+  }
+
+  // if not found, return invalid location:
+  return { -1, -1 };
+}
+
+
+
+
+
 int main (int argc, char* argv[])
 {
   debug::set_verbose_mode (argc, argv);
@@ -20,16 +52,23 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
+    // need to call this before constructing data set, to remove the -p option
+    // from the list of arguments (if present) before constructing the Dataset:
+    auto pixel = get_pixel_cmdline (argc, argv);
+
     // We use aggregate initialisation to construct the
     // std::vector<std::string> argument expected by the Dataset constructor,
     // relying one of the std::vector constructors:
     Dataset data ({ argv+1, argv+argc });
 
-    int x = data.get(0).width()/2;
-    int y = data.get(0).height()/2;
+    // default values if x & y not set (<0):
+    if (pixel.x < 0 || pixel.y < 0)
+      pixel = { data.get(0).width()/2, data.get(0).height()/2 };
+    else if (pixel.x >= data.get(0).width() || pixel.y >= data.get(0).height())
+      throw std::runtime_error ("pixel position is out of bounds");
 
-    std::cerr << std::format ("image values at pixel ({},{}) = [ ", x, y);
-    for (const auto& val : data.get_timecourse (x,y))
+    std::cerr << std::format ("image values at pixel ({},{}) = [ ", pixel.x, pixel.y);
+    for (const auto& val : data.get_timecourse (pixel.x, pixel.y))
       std::cerr << val << " ";
     std::cerr << "]\n";
 
