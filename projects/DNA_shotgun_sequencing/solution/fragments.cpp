@@ -9,8 +9,7 @@
 
 std::vector<std::string> load_fragments (const std::string& filename)
 {
-  if (debug::verbose)
-    std::cerr << "reading fragments from file \"" << filename << "\"...\n";
+  debug::log ("reading fragments from file \"" + filename + "\"...");
 
   std::ifstream infile (filename);
   if (!infile)
@@ -24,8 +23,7 @@ std::vector<std::string> load_fragments (const std::string& filename)
   if (fragments.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no fragments");
 
-  if (debug::verbose)
-    std::cerr << "read " << fragments.size() << " fragments\n";
+  debug::log ("read " + std::to_string (fragments.size()) + " fragments");
 
   return fragments;
 }
@@ -51,8 +49,7 @@ void fragment_statistics (const std::vector<std::string>& fragments)
 
 void write_sequence (const std::string& filename, const std::string& sequence)
 {
-  if (debug::verbose)
-    std::cerr << "writing sequence to file \"" << filename << "\"...\n";
+  debug::log ("writing sequence to file \"" + filename + "\"...");
 
   std::ofstream outfile (filename);
   if (!outfile)
