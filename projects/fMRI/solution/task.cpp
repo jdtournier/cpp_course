@@ -21,3 +21,13 @@ std::vector<int> load_task (const std::string& filename)
   debug::log ("task file \"" + filename + "\" loaded OK");
   return task;
 }
+
+
+std::vector<float> rescale (const std::vector<int>& task, int min, int max)
+{
+  std::vector<float> out (task.size());
+  for (unsigned int n = 0; n < task.size(); ++n)
+    out[n] = min + task[n] * (max-min);
+  return out;
+}
+
