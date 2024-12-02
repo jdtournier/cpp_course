@@ -75,8 +75,12 @@ int main (int argc, char* argv[])
     else if (pixel.x >= data.get(0).width() || pixel.y >= data.get(0).height())
       throw std::runtime_error ("pixel position is out of bounds");
 
-    termviz::figure().plot (data.get_timecourse (pixel.x, pixel.y));
-    termviz::figure().plot (task);
+    auto signal = data.get_timecourse (pixel.x, pixel.y);
+    auto minval = *std::min_element (signal.begin(), signal.end());
+    auto maxval = *std::max_element (signal.begin(), signal.end());
+    termviz::figure()
+      .plot (signal)
+      .plot (rescale (task, minval, maxval), 3);
 
   } // end of main processing
 
