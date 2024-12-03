@@ -69,10 +69,12 @@ int main (int argc, char* argv[])
     if (task.size() != data.size())
       throw std::runtime_error ("number of time points in task file does not match dataset");
 
+    termviz::imshow (termviz::magnify (data[0], 4), 0, 4000);
+
     // default values if x & y not set (<0):
     if (pixel.x < 0 || pixel.y < 0)
-      pixel = { data.get(0).width()/2, data.get(0).height()/2 };
-    else if (pixel.x >= data.get(0).width() || pixel.y >= data.get(0).height())
+      pixel = { data[0].width()/2, data[0].height()/2 };
+    else if (pixel.x >= data[0].width() || pixel.y >= data[0].height())
       throw std::runtime_error ("pixel position is out of bounds");
 
     auto signal = data.get_timecourse (pixel.x, pixel.y);
