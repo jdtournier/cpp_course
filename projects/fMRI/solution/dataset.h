@@ -24,3 +24,11 @@ class Dataset
     std::vector<Image> m_slices;
 };
 
+
+inline std::ostream& operator<< (std::ostream& out, const Dataset& data)
+{
+  out << "Data set with " << data.size() << " images:\n";
+  for (unsigned int n = 0; n < data.size(); ++n)
+    out << "  image " << n << ": " << data[n] << "\n";
+  return out;
+}
