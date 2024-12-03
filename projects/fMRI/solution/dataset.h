@@ -15,13 +15,13 @@ class Dataset
 
     unsigned int size () const { return m_slices.size(); }
 
-    Image&       operator[] (int n)       { return m_slices[n]; }
-    const Image& operator[] (int n) const { return m_slices[n]; }
+    Image<int>&       operator[] (int n)       { return m_slices[n]; }
+    const Image<int>& operator[] (int n) const { return m_slices[n]; }
 
     std::vector<int> get_timecourse (int x, int y) const;
 
   private:
-    std::vector<Image> m_slices;
+    std::vector<Image<int>> m_slices;
 };
 
 
