@@ -66,6 +66,8 @@ int main (int argc, char* argv[])
     // std::vector<std::string> argument expected by the Dataset constructor,
     // relying one of the std::vector constructors:
     Dataset data ({ argv+2, argv+argc });
+    std::cerr << data << "\n";
+
     if (task.size() != data.size())
       throw std::runtime_error ("number of time points in task file does not match dataset");
 
