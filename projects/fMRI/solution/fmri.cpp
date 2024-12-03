@@ -89,6 +89,9 @@ int main (int argc, char* argv[])
     std::cerr << std::format ("correlation_coefficient at ({},{}) = {}\n",
         pixel.x, pixel.y, correlation_coefficient (signal, task));
 
+    auto im_corr = correlation_coefficient (task, data);
+    termviz::imshow (termviz::magnify (im_corr, 4), -1000, 1000, termviz::jet());
+
   } // end of main processing
 
   // error handling from here:
