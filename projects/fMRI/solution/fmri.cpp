@@ -74,9 +74,15 @@ int main (int argc, char* argv[])
     termviz::imshow (termviz::magnify (data[0], 4), 0, 4000);
 
     // default values if x & y not set (<0):
-    if (pixel.x < 0 || pixel.y < 0)
-      pixel = { data[0].width()/2, data[0].height()/2 };
-    else if (pixel.x >= data[0].width() || pixel.y >= data[0].height())
+    if (pixel.x < 0 || pixel.y < 0) {
+      auto im_corr = correlation_coefficient (task, data);
+      termviz::imshow (termviz::magnify (im_corr, 4), -1000, 1000, termviz::jet());
+
+      return 0;
+    }
+
+    // otherwise, extract that pixel's timecourse and plot against task:
+    if (pixel.x >= data[0].width() || pixel.y >= data[0].height())
       throw std::runtime_error ("pixel position is out of bounds");
 
     auto signal = data.get_timecourse (pixel.x, pixel.y);
@@ -88,9 +94,6 @@ int main (int argc, char* argv[])
 
     std::cerr << std::format ("correlation_coefficient at ({},{}) = {}\n",
         pixel.x, pixel.y, correlation_coefficient (signal, task));
-
-    auto im_corr = correlation_coefficient (task, data);
-    termviz::imshow (termviz::magnify (im_corr, 4), -1000, 1000, termviz::jet());
 
   } // end of main processing
 
