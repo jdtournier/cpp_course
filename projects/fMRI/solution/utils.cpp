@@ -6,7 +6,7 @@
 #include "dataset.h"
 
 
-Image<float> correlation_coefficient (const std::vector<int>& task, const Dataset& data)
+Image<float> correlation_coefficient (const std::vector<int>& task, const Dataset<int>& data)
 {
   if (data.size() < 2)
     throw std::runtime_error ("dataset is too small to compute correlation coefficient!");
