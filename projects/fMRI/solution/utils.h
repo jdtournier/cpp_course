@@ -31,6 +31,6 @@ double correlation_coefficient (const VectorType1& a, const VectorType2& b)
 }
 
 
-Image correlation_coefficient (const std::vector<int>& task, const Dataset& data);
+Image<float> correlation_coefficient (const std::vector<int>& task, const Dataset& data);
 
 
