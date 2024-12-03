@@ -2,6 +2,7 @@
 
 #include <array>
 #include <vector>
+#include <iostream>
 #include <stdexcept>
 
 class Image {
@@ -25,4 +26,12 @@ class Image {
     std::array<int,2> m_dim;
     std::vector<int> m_data;
 };
+
+
+
+inline std::ostream& operator<< (std::ostream& out, const Image& im)
+{
+  out << "Image of size " << im.width() << "x" << im.height();
+  return out;
+}
 
