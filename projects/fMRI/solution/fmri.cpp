@@ -12,6 +12,7 @@
 #include "pgm.h"
 #include "dataset.h"
 #include "task.h"
+#include "utils.h"
 
 
 struct Pixel {
@@ -66,7 +67,6 @@ int main (int argc, char* argv[])
     // std::vector<std::string> argument expected by the Dataset constructor,
     // relying one of the std::vector constructors:
     Dataset data ({ argv+2, argv+argc });
-    std::cerr << data << "\n";
 
     if (task.size() != data.size())
       throw std::runtime_error ("number of time points in task file does not match dataset");
@@ -85,6 +85,9 @@ int main (int argc, char* argv[])
     termviz::figure()
       .plot (signal)
       .plot (rescale (task, minval, maxval), 3);
+
+    std::cerr << std::format ("correlation_coefficient at ({},{}) = {}\n",
+        pixel.x, pixel.y, correlation_coefficient (signal, task));
 
   } // end of main processing
 
