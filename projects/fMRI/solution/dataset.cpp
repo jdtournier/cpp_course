@@ -37,7 +37,7 @@ std::vector<int> Dataset::get_timecourse (int x, int y) const
 {
   std::vector<int> vals (size());
   for (unsigned int n = 0; n < size(); ++n)
-    vals[n] = m_slices[n].get(x,y);
+    vals[n] = m_slices[n](x,y);
   return vals;
 }
 
