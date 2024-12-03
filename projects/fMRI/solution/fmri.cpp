@@ -76,7 +76,7 @@ int main (int argc, char* argv[])
     // default values if x & y not set (<0):
     if (pixel.x < 0 || pixel.y < 0) {
       auto im_corr = correlation_coefficient (task, data);
-      termviz::imshow (termviz::magnify (im_corr, 4), -1000, 1000, termviz::jet());
+      termviz::imshow (termviz::magnify (im_corr, 4), -1.0, 1.0, termviz::jet());
 
       return 0;
     }
