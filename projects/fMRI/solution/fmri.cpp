@@ -66,7 +66,7 @@ int main (int argc, char* argv[])
     // We use aggregate initialisation to construct the
     // std::vector<std::string> argument expected by the Dataset constructor,
     // relying one of the std::vector constructors:
-    Dataset data ({ argv+2, argv+argc });
+    Dataset<int> data ({ argv+2, argv+argc });
 
     if (task.size() != data.size())
       throw std::runtime_error ("number of time points in task file does not match dataset");
