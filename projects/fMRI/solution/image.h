@@ -18,11 +18,8 @@ class Image {
     int width () const { return m_dim[0]; }
     int height () const { return m_dim[1]; }
 
-
-    const std::vector<int>& data () const { return m_data; }
-
-    int get (int x, int y) const { return m_data[x + m_dim[0]*y]; }
-    void set (int x, int y, int value)  { m_data[x + m_dim[0]*y] = value; }
+    const int& operator() (int x, int y) const { return m_data[x + m_dim[0]*y]; }
+    int& operator() (int x, int y) { return m_data[x + m_dim[0]*y]; }
 
   private:
     std::array<int,2> m_dim;

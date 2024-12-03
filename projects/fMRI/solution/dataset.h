@@ -14,7 +14,9 @@ class Dataset
     void load (const std::vector<std::string>& filenames);
 
     unsigned int size () const { return m_slices.size(); }
-    const Image& get (int n) const { return m_slices[n]; }
+
+    Image&       operator[] (int n)       { return m_slices[n]; }
+    const Image& operator[] (int n) const { return m_slices[n]; }
 
     std::vector<int> get_timecourse (int x, int y) const;
 
