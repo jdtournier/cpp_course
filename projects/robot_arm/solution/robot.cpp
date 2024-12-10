@@ -3,6 +3,7 @@
 
 #include "debug.h"
 #include "segment/tip.h"
+#include "segment/straight.h"
 
 int main (int argc, char* argv[])
 {
@@ -11,7 +12,8 @@ int main (int argc, char* argv[])
   try { // Start of main processing:
 
     Segment::Tip tip (20.0);
-    Segment::Base root (tip, "root");
+    Segment::Straight straight (tip, 30.0);
+    Segment::Base root (straight, "root");
 
     std::cout << "tip position: " << root.tip_position() << "\n";
 
