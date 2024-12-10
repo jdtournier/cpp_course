@@ -13,7 +13,7 @@ namespace Segment {
         m_type (type) { }
 
       const std::string& type () const { return m_type; }
-      virtual Point tip_position () const { return m_next.tip_position(); }
+      virtual Point tip_position () const = 0;
 
     protected:
       Base& m_next;
