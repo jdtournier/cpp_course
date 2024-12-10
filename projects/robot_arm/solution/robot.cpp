@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "segment/tip.h"
 #include "segment/straight.h"
+#include "segment/bend.h"
 #include "segment/root.h"
 
 int main (int argc, char* argv[])
@@ -12,9 +13,12 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
-    Segment::Tip tip (20.0);
-    Segment::Straight straight (tip, 30.0);
+    Segment::Tip tip (10.0);
+    Segment::Bend bend (tip, 6.0);
+    Segment::Straight straight (bend, 15.0);
     Segment::Root root (straight);
+
+    bend.set_angle (1.3);
 
     std::cout << "tip position: " << root.tip_position() << "\n";
 
