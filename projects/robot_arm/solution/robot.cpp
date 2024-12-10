@@ -14,16 +14,26 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
+    // set up robot arm:
+
     Segment::Tip tip (10.0);
-    Segment::Bend bend (tip, 6.0);
-    Segment::Straight straight (bend, 15.0);
-    Segment::Rotate rotate (straight, 5.0);
-    Segment::Root root (rotate);
+    Segment::Bend bend3 (tip, 6.0);
+    Segment::Straight straight3 (bend3, 15.0);
+    Segment::Rotate rotate3 (straight3, 5.0);
+    Segment::Bend bend2 (rotate3, 8.0);
+    Segment::Straight straight2 (bend2, 20.0);
+    Segment::Rotate rotate2 (straight2, 5.0);
+    Segment::Bend bend1 (rotate2, 10.0);
+    Segment::Straight straight1 (bend1, 30.0);
+    Segment::Rotate rotate1 (straight1, 5.0);
+    Segment::Root root (rotate1);
 
-    bend.set_angle (1.3);
-    rotate.set_angle (std::numbers::pi/2.0);
-
-    std::cout << "tip position: " << root.tip_position() << "\n";
+    for (int n = 0; n <= 20; ++n) {
+      bend1.set_angle (std::numbers::pi * n / 40.0);
+      rotate1.set_angle (std::numbers::pi * n / 40.0);
+      bend2.set_angle (std::numbers::pi * n / 80.0);
+      std::cout << "tip position: " << root.tip_position() << "\n";
+    }
 
   } // end of main processing
 
