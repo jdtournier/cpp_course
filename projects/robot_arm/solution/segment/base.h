@@ -15,7 +15,7 @@ namespace Segment {
       const std::string& type () const { return m_type; }
       virtual Point tip_position () const { return m_next.tip_position(); }
 
-    private:
+    protected:
       Base& m_next;
       const std::string m_type;
   };
