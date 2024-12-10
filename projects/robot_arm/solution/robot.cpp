@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "debug.h"
+#include "segment/base.h"
 
 int main (int argc, char* argv[])
 {
