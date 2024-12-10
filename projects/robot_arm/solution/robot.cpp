@@ -2,7 +2,7 @@
 #include <stdexcept>
 
 #include "debug.h"
-#include "segment/base.h"
+#include "segment/tip.h"
 
 int main (int argc, char* argv[])
 {
@@ -10,6 +10,8 @@ int main (int argc, char* argv[])
 
   try { // Start of main processing:
 
+    Segment::Tip tip (20.0);
+    Segment::Base root (tip, "root");
 
   } // end of main processing
 
