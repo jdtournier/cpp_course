@@ -1,6 +1,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include <termviz.h>
+
 #include "debug.h"
 #include "load_parameters.h"
 #include "segment/tip.h"
@@ -51,6 +53,29 @@ int main (int argc, char* argv[])
       positions.push_back (root.tip_position());
       std::cout << positions.back() << "\n";
     }
+
+    std::vector<double> x, y, z;
+    for (const auto& p : positions) {
+      x.push_back (p[0]);
+      y.push_back (p[1]);
+      z.push_back (p[2]);
+    }
+
+    // plot projections of the tip trajectory
+    // in the x,z plane (yellow)
+    // in the y,z plane (pink)
+    // in the x,y plane (blue)
+    termviz::figure(600,600)
+      .xlim(-40,80)
+      .ylim(-40,120)
+      .xticks (20)
+      .yticks (20)
+      .plot (x,z,2)
+      .plot (y,z,3)
+      .plot (x,y,4)
+      .text ("(x,z)",80,120,1,1,2)
+      .text ("(y,z)",80,115,1,1,3)
+      .text ("(x,y)",80,110,1,1,4);
 
   } // end of main processing
 
