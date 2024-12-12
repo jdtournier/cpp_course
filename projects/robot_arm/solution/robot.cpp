@@ -12,7 +12,19 @@
 #include "segment/root.h"
 
 
-void plot_trajectory (const std::vector<Point>& positions, const double time_interval)
+
+constexpr double speed_threshold = 20.0;
+constexpr double accel_threshold = 20.0;
+
+
+struct TrajectoryInfo {
+  Point final_position;
+  double max_speed, max_accel;
+};
+
+
+
+TrajectoryInfo plot_trajectory (const std::vector<Point>& positions, const double time_interval)
 {
   std::vector<double> x, y, z, speed, accel;
 
@@ -62,7 +74,7 @@ void plot_trajectory (const std::vector<Point>& positions, const double time_int
     .text ("speed", speed.size()-1, ymax, 1, 1, 2)
     .text ("acceleration", speed.size()-1, ymax, 1, 2, 3);
 
-  std::cout << "Final tip position: " << positions.back() << "\n";
+  return { positions.back(), std::ranges::max (speed), std::ranges::max (accel) };
 }
 
 
@@ -110,7 +122,31 @@ int main (int argc, char* argv[])
       positions.push_back (root.tip_position());
     }
 
-    plot_trajectory (positions, 0.1);
+    auto [ tip_pos, max_speed, max_accel ] = plot_trajectory (positions, 0.1);
+
+    std::cout << "Final tip position: " << tip_pos << "\n";
+    std::cout << "Maximum speed: " << max_speed << " cm/s\n";
+    std::cout << "Maximum acceleration: " << max_accel << " cm/s²\n";
+
+    if (max_speed < speed_threshold && max_accel < accel_threshold) {
+      std::cout << "Both speed and acceleration remain within safe limits\n";
+      return 0;
+    }
+
+
+    // speed and/or acceleration exceed threshold - report and raise an error:
+
+    std::string report = "tip ";
+    if (max_speed >= speed_threshold)
+      report += "speed";
+
+    if (max_accel >= accel_threshold) {
+      if (max_speed >= speed_threshold)
+        report += " and ";
+      report += "acceleration";
+    }
+
+    throw std::runtime_error (report + " above safety limits");
 
   } // end of main processing
 
