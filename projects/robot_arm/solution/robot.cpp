@@ -14,7 +14,7 @@
 
 void plot_trajectory (const std::vector<Point>& positions, const double time_interval)
 {
-  std::vector<double> x, y, z, speed;
+  std::vector<double> x, y, z, speed, accel;
 
   for (int n = 0; n < static_cast<int> (positions.size()); ++n) {
     const Point& p (positions[n]);
@@ -22,10 +22,11 @@ void plot_trajectory (const std::vector<Point>& positions, const double time_int
     const Point& p_next (n < static_cast<int>(positions.size())-1 ? positions[n+1] : p);
 
     speed.push_back (length (p_next-p_prev)/(2.0*time_interval));
+    accel.push_back (length ((p_next-p) - (p-p_prev)) / (time_interval*time_interval));
 
     debug::log (
-        std::format ("tip position: [ {:6.3f} {:6.3f} {:6.3f} ], speed: {:6.3f}",
-          p[0], p[1], p[2], speed.back()));
+        std::format ("tip position: [ {:6.3f} {:6.3f} {:6.3f} ], speed: {:6.3f}, acceleration: {:.3f}",
+          p[0], p[1], p[2], speed.back(), accel.back()));
 
     x.push_back (p[0]);
     y.push_back (p[1]);
@@ -47,12 +48,19 @@ void plot_trajectory (const std::vector<Point>& positions, const double time_int
     .plot (x,z,2)
     .plot (y,z,3)
     .plot (x,y,4)
-    .text ("(x,z)", 50, 116, 0.5, 0.5, 2)
-    .text ("(y,z)", 50, 110, 0.5, 0.5, 3)
-    .text ("(x,y)", 50, 104, 0.5, 0.5, 4);
+    .text ("(x,z)", xmax, ymax, 1, 1, 2)
+    .text ("(y,z)", xmax, ymax, 1, 2, 3)
+    .text ("(x,y)", xmax, ymax, 1, 3, 4);
 
-  std::cout << "Tip speed (cm/s):\n";
-  termviz::figure().plot (speed);
+  ymax = std::max (std::ranges::max (speed), std::ranges::max (accel)) + 10;
+
+  std::cout << "Tip speed (cm/s) and acceleration (cm/s²):\n";
+  termviz::figure()
+    .ylim (0, ymax)
+    .plot (speed, 2)
+    .plot (accel, 3)
+    .text ("speed", speed.size()-1, ymax, 1, 1, 2)
+    .text ("acceleration", speed.size()-1, ymax, 1, 2, 3);
 
   std::cout << "Final tip position: " << positions.back() << "\n";
 }
