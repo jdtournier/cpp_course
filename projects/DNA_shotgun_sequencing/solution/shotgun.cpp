@@ -20,7 +20,7 @@ int main (int argc, char* argv[])
 
     auto fragments = load_fragments (argv[1]);
 
-    ShotgunSequencer solver;
+    ShotgunSequencer solver (10);
     solver.init (fragments);
 
     std::cerr << "initial sequence has size " << solver.sequence().size() << "\n";
