@@ -10,9 +10,7 @@ namespace Segment {
         Base (*this, "tip"),
         m_length (length) { }
 
-      Point tip_position () const override {
-        return { 0.0, 0.0, m_length };
-      }
+      Point tip_position () const override;
 
     private:
       const double m_length;
