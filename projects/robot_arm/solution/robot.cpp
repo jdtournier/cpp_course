@@ -13,6 +13,8 @@ int main (int argc, char* argv[])
     Segment::Tip tip (20.0);
     Segment::Base root (tip, "root");
 
+    std::cout << "tip position: " << root.tip_position() << "\n";
+
   } // end of main processing
 
   // error handling from here:
