@@ -24,6 +24,7 @@ namespace Segment {
 
       const std::string& type () const { return m_type; }
       virtual Point tip_position () const = 0;
+      virtual void set_angle (int n, double angle);
 
     protected:
       Base* m_next;
