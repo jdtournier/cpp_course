@@ -6,8 +6,8 @@ namespace Segment {
 
   class Straight : public Base {
     public:
-      Straight (Base* next, double length) :
-        Base (next, "straight"),
+      Straight (double length) :
+        Base ("straight"),
         m_length (length) { }
 
       Point tip_position () const override;

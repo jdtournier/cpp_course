@@ -6,8 +6,7 @@ namespace Segment {
 
   class Root : public Base {
     public:
-      Root (Base* next) :
-        Base (next, "root") { }
+      Root () : Base ("root") { }
 
       Point tip_position () const override;
   };
