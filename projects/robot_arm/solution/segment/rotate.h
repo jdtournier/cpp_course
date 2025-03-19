@@ -6,7 +6,7 @@ namespace Segment {
 
   class Rotate : public Base {
     public:
-      Rotate (Base& next, double length) :
+      Rotate (Base* next, double length) :
         Base (next, "rotate"),
         m_length (length),
         m_angle (0.0) { }
