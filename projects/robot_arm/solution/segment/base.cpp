@@ -5,6 +5,7 @@ namespace Segment {
 
   Base::~Base () {
     debug::log ("destroying segment of type " + m_type);
+    delete m_next;
   }
 
   void Base::set_angle (int n, double angle)
