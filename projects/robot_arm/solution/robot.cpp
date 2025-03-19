@@ -125,12 +125,8 @@ int main (int argc, char* argv[])
 
     for (const auto& p : params) {
 
-      rotate1.set_angle (p[0]);
-      bend1.set_angle (p[1]);
-      rotate2.set_angle (p[2]);
-      bend2.set_angle (p[3]);
-      rotate3.set_angle (p[4]);
-      bend3.set_angle (p[5]);
+      for (unsigned int n = 0; n < p.size(); ++n)
+        root.set_angle (n, p[n]);
 
       positions.push_back (root.tip_position());
     }

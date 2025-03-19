@@ -11,6 +11,7 @@ namespace Segment {
         m_length (length) { }
 
       Point tip_position () const override;
+      void set_angle (int n, double angle) override;
 
     private:
       const double m_length;
