@@ -94,17 +94,18 @@ int main (int argc, char* argv[])
     Segment::Root root;
 
     // create and connect all the segments in the desired configuration:
+
     root
-      .set_next (new Segment::Rotate (5.0))
-      .set_next (new Segment::Straight (30.0))
-      .set_next (new Segment::Bend (10.0))
-      .set_next (new Segment::Rotate (5.0))
-      .set_next (new Segment::Straight (20.0))
-      .set_next (new Segment::Bend (8.0))
-      .set_next (new Segment::Rotate (5.0))
-      .set_next (new Segment::Straight (15.0))
-      .set_next (new Segment::Bend (6.0))
-      .set_next (new Segment::Tip (10.0));
+      .set_next (std::make_unique<Segment::Rotate> (5.0))
+      .set_next (std::make_unique<Segment::Straight> (30.0))
+      .set_next (std::make_unique<Segment::Bend> (10.0))
+      .set_next (std::make_unique<Segment::Rotate> (5.0))
+      .set_next (std::make_unique<Segment::Straight> (20.0))
+      .set_next (std::make_unique<Segment::Bend> (8.0))
+      .set_next (std::make_unique<Segment::Rotate> (5.0))
+      .set_next (std::make_unique<Segment::Straight> (15.0))
+      .set_next (std::make_unique<Segment::Bend> (6.0))
+      .set_next (std::make_unique<Segment::Tip> (10.0));
 
     // read parameter list:
     auto params = load_parameters (argv[1]);
