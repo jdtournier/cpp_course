@@ -6,7 +6,7 @@ namespace Segment {
 
   class Straight : public Base {
     public:
-      Straight (Base& next, double length) :
+      Straight (Base* next, double length) :
         Base (next, "straight"),
         m_length (length) { }
 

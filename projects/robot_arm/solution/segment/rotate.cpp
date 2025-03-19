@@ -6,7 +6,7 @@ namespace Segment {
 
   Point Rotate::tip_position () const
   {
-    auto p = m_next.tip_position();
+    auto p = m_next->tip_position();
     const double s = std::sin (m_angle);
     const double c = std::cos (m_angle);
     return {

@@ -6,7 +6,7 @@ namespace Segment {
 
   class Bend : public Base {
     public:
-      Bend (Base& next, double length) :
+      Bend (Base* next, double length) :
         Base (next, "bend"),
         m_length (length),
         m_angle (0.0) { }

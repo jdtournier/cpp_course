@@ -94,16 +94,16 @@ int main (int argc, char* argv[])
     // set up robot arm:
 
     Segment::Tip tip (10.0);
-    Segment::Bend bend3 (tip, 6.0);
-    Segment::Straight straight3 (bend3, 15.0);
-    Segment::Rotate rotate3 (straight3, 5.0);
-    Segment::Bend bend2 (rotate3, 8.0);
-    Segment::Straight straight2 (bend2, 20.0);
-    Segment::Rotate rotate2 (straight2, 5.0);
-    Segment::Bend bend1 (rotate2, 10.0);
-    Segment::Straight straight1 (bend1, 30.0);
-    Segment::Rotate rotate1 (straight1, 5.0);
-    Segment::Root root (rotate1);
+    Segment::Bend bend3 (&tip, 6.0);
+    Segment::Straight straight3 (&bend3, 15.0);
+    Segment::Rotate rotate3 (&straight3, 5.0);
+    Segment::Bend bend2 (&rotate3, 8.0);
+    Segment::Straight straight2 (&bend2, 20.0);
+    Segment::Rotate rotate2 (&straight2, 5.0);
+    Segment::Bend bend1 (&rotate2, 10.0);
+    Segment::Straight straight1 (&bend1, 30.0);
+    Segment::Rotate rotate1 (&straight1, 5.0);
+    Segment::Root root (&rotate1);
 
     // read parameter list:
     auto params = load_parameters (argv[1]);
