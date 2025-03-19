@@ -14,11 +14,14 @@ namespace Segment {
         m_type (type) {
           debug::log ("constructing segment of type " + m_type);
         }
+      Base (const Base& other) = delete;
+      Base& operator= (const Base& other) = delete;
 
       virtual ~Base();
 
-      Base& set_next (Base& next) {
-        m_next = &next;
+      Base& set_next (Base* next) {
+        delete m_next;
+        m_next = next;
         return *m_next;
       }
 
