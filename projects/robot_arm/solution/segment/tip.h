@@ -7,7 +7,7 @@ namespace Segment {
   class Tip : public Base {
     public:
       Tip (double length) :
-        Base (nullptr, "tip"),
+        Base ("tip"),
         m_length (length) { }
 
       Point tip_position () const override;
