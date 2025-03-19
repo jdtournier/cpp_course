@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "point.h"
 #include "debug.h"
@@ -19,9 +20,8 @@ namespace Segment {
 
       virtual ~Base();
 
-      Base& set_next (Base* next) {
-        delete m_next;
-        m_next = next;
+      Base& set_next (std::unique_ptr<Base> next) {
+        m_next.swap (next);
         return *m_next;
       }
 
@@ -30,7 +30,7 @@ namespace Segment {
       virtual void set_angle (int n, double angle);
 
     protected:
-      Base* m_next;
+      std::unique_ptr<Base> m_next;
       const std::string m_type;
   };
 
