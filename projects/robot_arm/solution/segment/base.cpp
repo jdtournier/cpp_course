@@ -7,4 +7,9 @@ namespace Segment {
     debug::log ("destroying segment of type " + m_type);
   }
 
+  void Base::set_angle (int n, double angle)
+  {
+    m_next->set_angle (n, angle);
+  }
+
 }
