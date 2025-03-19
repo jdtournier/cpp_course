@@ -1,23 +1,19 @@
 #pragma once
 
-#include "segment/base.h"
+#include "segment/angle_base.h"
 
 namespace Segment {
 
-  class Rotate : public Base {
+  class Rotate : public AngleBase {
     public:
       Rotate (double length) :
-        Base ("rotate"),
-        m_length (length),
-        m_angle (0.0) { }
+        AngleBase ("rotate"),
+        m_length (length) { }
 
       Point tip_position () const override;
 
-      void set_angle (double angle) { m_angle = angle; }
-
     private:
       const double m_length;
-      double m_angle;
   };
 
 }
