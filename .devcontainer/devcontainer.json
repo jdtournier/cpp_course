@@ -1,0 +1,46 @@
+{
+    "build": {
+        "dockerfile": "./Dockerfile",
+        "context": "."
+    },
+    
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": "true",
+            "username": "vscode",
+			"userUid": "1000",
+			"userGid": "1000",
+            "upgradePackages": "true"
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest",
+            "ppa": "false"
+        }
+    },
+    
+    "customizations": {
+        "vscode": {
+            "settings": { 
+                "terminal.integrated.enableImages": true,
+		"files.exclude": "**/.*",
+                "git.autoRepositoryDetection": false,
+                "extensions.ignoreRecommendations": true,
+                "workbench.remoteIndicator.showExtensionRecommendations": false,
+                "window.menuBarVisibility": "classic",
+                "extensions.allowed": {
+                    "ms-vscode.cpptools": true,
+                    "github.codespaces": true,
+                    "github.github-vscode-theme": true
+                }
+             },
+            "extensions": ["ms-vscode.cpptools"]
+        }
+    },
+
+    "remoteEnv": {
+        "WHITEBG": "1",
+        "PATH": "${containerEnv:PATH}:/workspaces/oop_codespace/.bin"
+    },
+
+    "remoteUser": "vscode"
+}

@@ -1,0 +1,442 @@
+#!/bin/bash 
+
+function usage {
+  cat <<'EOD'
+
+This is a no-frills script to compile and link small C++ projects. It emulates
+what a Makefile might do, based on simple assumptions:
+
+- all code files have a `.cpp` suffix (no restrictions for headers).
+
+- any code file in the top-level folder that defines a `main()` function is
+  destined to produce a corresponding executable of the same name (with the
+  `.cpp` suffix stripped out).
+
+- *user* headers are `#include`d in inverted commas, while *system* headers are
+  `#include`d in angled brackets, i.e. like this:
+
+        // when working out dependencies:
+        #include "my_header.h"   // <- user header: will be inspected
+        #include <iostream>      // <- system header: will be ignored
+
+  This is important if the script is to work out dependencies correctly: it will
+  scan through all *user* headers recursively to work out whether each object is
+  up to date relative to the headers it depends on, but ignore all *system*
+  headers.
+
+- any additional `cpp` files that need to be compiled and linked with the
+  target executable(s) must have a corresponding header file, with the same
+  name (but expected suffix for a header file), and this header must be
+  `#include`d in another dependency for that executable (header or cpp). Otherwise,
+  the corresponding object file will not be included in the list when linking
+  the target executable.
+
+  For example, if `main.cpp` relies on functionality in `utils.cpp`, then the
+  `utils.h` header must exist and be `#include`d by `main.cpp` (or one of the other
+  already included headers).
+
+#### Invoking the build script
+
+Make sure your working directory is the folder containing your code, then
+simply type `build`. The default action is to build the executables (i.e.
+compile the .cpp files and link the resulting objects).
+
+If arguments are provided, they will override the default targets. The `build`
+script will try to compile the corresponding executables.
+
+As an exception, the special argument `clean` can be provided to remove all
+temporary files (executables and object files),
+
+The `build` script also accepts the following options:
+
+- `-help`:        print this help page
+
+- `-verbose`:     print out additional information about what the script is
+                  doing, including the executables detected, each intermediate
+                  file's dependencies, whether why each file needs to be
+                  updated, and why.
+
+- `-config name`: specify the build configuration to use (default: `debug`).
+
+Available configurations for this project are:
+
+EOD
+
+for config in ${!description[@]}; do
+  echo "- \`$config\`: ${description[$config]}"
+done
+
+  cat <<'EOD'
+
+#### Customising the build
+
+If you need to override the default settings (compiler executable, provide
+non-default or additional include locations, etc), place those settings in the
+`settings.sh` file. An example such file is provided in the
+`settings_example.sh`; you can simply copy this file and name it `settings.sh`,
+modify as required, and invoke `build` again.
+
+It is also possible to override some settings using environment variables,
+including:
+
+- `CXX`:        override the default compiler (default: `g++`)
+- `CXXSTD`:     override the default version of the C++ standard (default:
+                `c++20`) 
+- `NJOBS`:      override the default number of concurrent compile jobs
+                (default: as reported by `nproc`)
+
+For example:
+
+    $ CXX=clang++ NJOBS=4 build
+
+
+EOD
+}
+
+
+
+
+
+#######################################
+# DEFAULT SETTINGS:
+#######################################
+
+# set compiler executable:
+# use CXX environment variable if set, otherwise default to g++
+cxx=${CXX:-g++}
+
+# set default C++ language standard:
+std=${CXXSTD:-c++20}
+
+# name of build log file:
+LOG="build_log.txt"
+
+declare -A description
+declare -A cflags
+declare -A ldflags
+
+# compiler flags used for release build:
+description['release']="create build suitable for release"
+cflags['release']="-O2 -DNDEBUG"
+ldflags['release']=""
+
+
+# compiler flags used for debug build:
+description['debug']="create build suitable for debugging"
+cflags['debug']="-D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC -g"
+ldflags['debug']="-g"
+
+# maximum number of compile jobs to run concurrently:
+# default to number of cores on system, as reported by 'nproc'
+# or 4 if nproc is not found
+njobs=$(nproc) || njobs=4
+
+# override number of jobs using NJOBS environment variable if specified:
+njobs=${NJOBS:-$njobs}
+
+
+#######################################
+# START OF SCRIPT PROPER:
+#######################################
+
+# terminate script on error:
+set -e
+
+verbose=0
+targets=()
+declare -A deps
+declare -A headers
+declare -A objects
+
+# load user-specific defaults if present:
+if [ -f settings.sh ]; then
+  . settings.sh
+fi
+
+
+
+
+#######################################
+# FUNCTIONS
+#######################################
+
+log() {
+  # print to build log:
+  echo "$@" >> "$LOG"
+}
+
+report() {
+  # print to stderr:
+  log "$@"
+  >&2 echo "$@"
+}
+
+
+error() {
+  # print to stderr and exit:
+  log "ERROR: $@"
+  >&2 echo ERROR: "$@"
+  exit 1
+}
+
+debug() {
+  if [ ! $verbose -eq 0 ]; then
+    report "# $@"
+  fi
+}
+
+
+check_need_update() {
+  # check whether target ('dest') is older than its dependencies:
+  dest=$1
+  shift 1
+
+  debug $dest depends on $@
+
+  # target exists?
+  if [[ ! -f $dest ]]; then
+    debug "- $dest does not exist - needs update"
+    return 1
+  fi
+
+  # target older than dependencies?
+  for n in $@; do
+    if [[ $dest -ot $n ]]; then
+      debug "- $dest is older than dependency $n - needs update"
+      return 1
+    fi
+  done
+
+  debug "- $dest is already up to date"
+  # target is up to date: return non-zero exit code
+  return 0
+}
+
+
+compile() {
+  j=( $(jobs -rp) )
+  while (( ${#j[@]} >= $njobs )); do
+    sleep 0.02
+    j=( $(jobs -rp) )
+  done
+
+  # compile cpp file into object
+  cmd="$cxx ${cflags[$config]} -std=$std -I. -c $1 -o $2"
+
+  report "[CC]" $cmd
+  ( 
+    $cmd || error "command \"$cmd\" failed"
+  ) &
+}
+
+
+
+link() {
+  # link objects into executable
+  local exe
+  exe=$1
+  shift
+  cmd="$cxx ${ldflags[$config]} $@ -o $exe"
+  report "[LD]" $cmd
+  $cmd || error "command \"$cmd\" failed" 
+}
+
+
+
+contains_main() {
+  while read line; do
+    if [[ "${line%%//*}" =~ int\ *main\ *\(.*\) ]]; then 
+      return 0
+    fi
+  done < $f
+  return 1
+}
+
+
+
+get_targets() {
+  # figure out target executable based on which cpp file contains main():
+  [[ ${#targets[@]} -gt 0 ]] && return;
+  shopt -s nullglob
+  for f in *.cpp; do
+    contains_main $f && targets+=( "${f%.cpp}" ) || :
+  done
+}
+
+
+
+
+not_in_list() {
+  match="$1"
+  shift
+  local entry
+  for entry in $@; do 
+    [[ "$entry" == "$match" ]] && return 1
+  done
+  return 0
+}
+
+
+
+list_local_headers() {
+  [[ -z "${headers[$1]}" ]] || return 0
+  # list all included local headers:
+  # i.e. matching the line '#include "header.h"
+  while read line; do
+    if [[ "${line%%//*}" =~ ^[[:space:]]*\#[[:space:]]*include[[:space:]]*\"([^\"]*)\" ]]; then 
+      f=${BASH_REMATCH[1]} || :
+      [[ -f $f ]] || error "no such header file \"$f\" (included from file \"$1\")"
+      not_in_list $f ${headers[$1]} && headers[$1]+="$f " || :
+    fi
+  done < $1
+}
+
+
+
+list_dependencies() {
+  [[ -z "${deps[$1]}" ]] || return 0
+  # list all dependencies of cpp or h file, including all headers recursively:
+  local f
+  local h
+  list_local_headers $1
+  deps[$1]="$1 "
+  for f in ${headers[$1]}; do
+    not_in_list $f ${deps[$1]} && deps[$1]+="$f " || :
+    list_dependencies $f
+    for h in ${deps[$f]}; do
+      not_in_list $h ${deps[$1]} && deps[$1]+="$h " || :
+    done
+  done
+
+}
+
+
+
+remove_duplicate_objects() {
+  local map
+  local entry
+  declare -A map
+  for entry in ${objects[$1]}; do map[$entry]="x"; done
+  objects[$1]="${!map[@]}"
+}
+
+
+
+scan_deps_for_target() {
+  list_dependencies $1
+  local entry
+  for entry in ${deps[$1]}; do
+    if [[ $entry == *.cpp ]]; then
+      list_dependencies $entry
+      objects[$exe]="${objects[$exe]} $entry"
+    else
+      cpp=${entry%.*}.cpp
+      [[ -f $cpp ]] || continue
+      not_in_list $cpp ${objects[$exe]} || continue
+      scan_deps_for_target $cpp
+    fi
+  done
+}
+
+
+
+clean() {
+  to_delete=( $(find . -name "*.o") )
+  for f in *.cpp; do
+    [ -x "${f%.cpp}" ] && to_delete+=( "${f%.cpp}" )
+  done
+  [ -f "$LOG" ] && to_delete+=( "$LOG" )
+  [ ${#to_delete[@]} -gt 0 ] && rm -vrf "${to_delete[@]}"
+}
+
+
+#######################################
+# CMDLINE PARSING
+#######################################
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    "-verbose")
+      verbose=1
+      ;;
+    "-help")
+      usage
+      exit 0
+      ;;
+    "clean")
+      clean
+      exit 0
+      ;;
+    "-config")
+      shift
+      if [[ -z ${cflags["$1"]} ]]; then
+        error "unknown build configuration: \"$1\""
+        exit 1
+      fi
+      config="$1"
+      ;;
+    *)
+      targets+=( "$1" )
+      ;;
+  esac
+  shift
+done
+
+
+# default to 'debug' build if unspecified:
+if [[ -z $config ]]; then
+  config=debug
+fi
+
+# check which config was last used, and clean first if different:
+if [ -s "$LOG" ]; then
+  while read line; do
+    [[ "$line" == "config: "* ]] && { previous_config="${line#config:\ }"; break; }
+  done < "$LOG"
+  if [ "$previous_config" != $config ]; then
+    report "NOTE: building using different configuration from last invocation - will clean first..."
+    clean
+  fi
+fi
+
+
+rm -f "$LOG"
+log "config: $config"
+
+
+
+#######################################
+# MAIN SCRIPT
+#######################################
+
+# guess executable names:
+get_targets
+[[ ${#targets[@]} -lt 1 ]] && report "WARNING: main() not defined in any cpp file - no executables will be generated"
+
+debug "target executables detected: ${targets[@]}"
+
+
+
+# recursive scan of included headers to figure out dependency tree:
+for exe in ${targets[@]}; do
+  scan_deps_for_target $exe.cpp
+  remove_duplicate_objects $exe
+done
+
+
+debug using $njobs jobs
+
+# compile and link all targets (unless cleaning):
+for exe in ${targets[@]}; do
+  objlist=""
+  for cpp in ${objects[$exe]}; do
+    obj="${cpp%.*}.o"
+    objlist+="$obj "
+    check_need_update "$obj" ${deps[$cpp]} || compile $cpp $obj
+  done
+  wait $(jobs -p)
+  check_need_update "$exe" $objlist || link $exe $objlist
+done
+
+
+
