@@ -14,3 +14,5 @@ RUN if [ "$VARIANT" = "noble" ]; then \
 
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends gdb
+
+COPY build /usr/local/bin/

@@ -22,7 +22,7 @@
         "vscode": {
             "settings": { 
                 "terminal.integrated.enableImages": true,
-		"files.exclude": "**/.*",
+                "files.exclude": "**/.*",
                 "git.autoRepositoryDetection": false,
                 "extensions.ignoreRecommendations": true,
                 "workbench.remoteIndicator.showExtensionRecommendations": false,
@@ -38,8 +38,7 @@
     },
 
     "remoteEnv": {
-        "WHITEBG": "1",
-        "PATH": "${containerEnv:PATH}:/workspaces/oop_codespace/.bin"
+        "WHITEBG": "1"
     },
 
     "remoteUser": "vscode"
