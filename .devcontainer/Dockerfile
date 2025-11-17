@@ -16,3 +16,4 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends gdb
 
 COPY build /usr/local/bin/
+COPY terminal_graphics.h /usr/local/include/
