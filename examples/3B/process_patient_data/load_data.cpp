@@ -1,13 +1,18 @@
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <vector>
 #include <stdexcept>
 
+#include "debug.h"
 #include "load_data.h"
 
 std::vector<std::vector<float>> load_patient_data (const std::string& filename)
 {
+  if (verbose_mode)
+    std::cerr << "loading file \"" << filename << "\"...\n";
+
   std::ifstream infile (filename);
   if (!infile)
     throw std::runtime_error ("failed to open file \"" + filename + "\" for reading");
@@ -38,6 +43,9 @@ std::vector<std::vector<float>> load_patient_data (const std::string& filename)
 
   if (data.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no usable data");
+
+  if (verbose_mode)
+    std::cerr << "found " << data.size() << " patients in file \"" << filename << "\"\n";
 
   return data;
 }
