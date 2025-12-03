@@ -16,7 +16,7 @@ int main (int argc, char* argv[])
     auto data = load_patient_data (argv[1]);
 
     for (const auto& pat : data)
-      std::cout << compute_mean (pat)<< "\n";
+      std::cout << compute_mean (pat) << " ± " << compute_stddev (pat) << "\n";
 
     // end of main processing block
   }
