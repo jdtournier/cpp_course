@@ -3,12 +3,6 @@
 
 #include "stats.h"
 
-float pow2 (float x)
-{
-  return x*x;
-}
-
-
 float compute_mean (const std::vector<float>& data)
 {
   float sum = 0.0;
