@@ -1,9 +1,11 @@
 #include <iostream>
 #include <stdexcept>
+#include <termviz.h>
 
 #include "debug.h"
 #include "load_data.h"
 #include "stats.h"
+
 
 int main (int argc, char* argv[])
 {
@@ -19,6 +21,8 @@ int main (int argc, char* argv[])
 
     for (const auto& pat : data)
       std::cout << compute_mean (pat) << " ± " << compute_stddev (pat) << "\n";
+
+    termviz::figure().plot (data[0]);
 
     // end of main processing block
   }
