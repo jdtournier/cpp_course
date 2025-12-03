@@ -22,7 +22,9 @@ int main (int argc, char* argv[])
     for (const auto& pat : data)
       std::cout << compute_mean (pat) << " ± " << compute_stddev (pat) << "\n";
 
-    termviz::figure().plot (data[0]);
+    auto fig = termviz::figure();
+    for (const auto& y : data)
+        fig.plot (y);
 
     // end of main processing block
   }
