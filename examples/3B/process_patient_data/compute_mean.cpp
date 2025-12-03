@@ -2,14 +2,7 @@
 #include <stdexcept>
 
 #include "load_data.h"
-
-float compute_mean (const std::vector<float>& data)
-{
-  float sum = 0.0;
-  for (const auto& value : data)
-    sum += value;
-  return sum / data.size();
-}
+#include "stats.h"
 
 
 int main (int argc, char* argv[])
