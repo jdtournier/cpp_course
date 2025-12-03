@@ -7,6 +7,8 @@ float eval_derivative (float x)   { return 3.0*x*x - 3.0; }
 int main()
 {
   float dx, x = 0.0;
+  if (argc >= 2) 
+    x = std::stod (argv[1]);
 
   do {
     float dfx = eval_derivative (x);
