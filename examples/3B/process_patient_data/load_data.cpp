@@ -10,8 +10,7 @@
 
 std::vector<std::vector<float>> load_patient_data (const std::string& filename)
 {
-  if (verbose_mode)
-    std::cerr << "loading file \"" << filename << "\"...\n";
+  log ("loading file \"" + filename + "\"...");
 
   std::ifstream infile (filename);
   if (!infile)
@@ -44,8 +43,7 @@ std::vector<std::vector<float>> load_patient_data (const std::string& filename)
   if (data.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no usable data");
 
-  if (verbose_mode)
-    std::cerr << "found " << data.size() << " patients in file \"" << filename << "\"\n";
+  log ("found " + std::to_string(data.size()) + " patients in file \"" + filename + "\"");
 
   return data;
 }
