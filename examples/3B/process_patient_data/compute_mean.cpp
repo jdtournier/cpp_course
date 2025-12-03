@@ -4,13 +4,39 @@
 #include "load_data.h"
 #include "stats.h"
 
+// We define a global variable to specify whether verbose mode is enabled.
+// By default, this should be false.
+bool verbose_mode = false;
+
+// check for presence of option_name in command-line arguments.
+// If found, remove the option from the argument list, and set the verbose_mode global variable to true.
+void set_verbose_mode (int& argc, char* argv[])
+{
+  for (int n = 1; n < argc; n++) {
+    if (argv[n] == std::string("-v")) {
+      argc--;
+      // shuffle remaining arguments back one place:
+      for (int m = n; m < argc; m++)
+        argv[m] = argv[m+1];
+      verbose_mode = true;
+      break;
+    }
+  }
+}
+
+
 
 int main (int argc, char* argv[])
 {
   try {
     // main processing block:
 
-   if (argc < 2)
+    set_verbose_mode (argc, argv);
+
+    if (verbose_mode)
+      std::cerr << "running in verbose mode\n";
+
+    if (argc < 2)
       throw std::out_of_range ("expected at least one argument for filename of input file");
 
     auto data = load_patient_data (argv[1]);
