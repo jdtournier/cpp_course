@@ -12,7 +12,7 @@ int main (int argc, char* argv[])
   try {
     // main processing block:
 
-    set_verbose_mode (argc, argv);
+    debug::set_verbose_mode (argc, argv);
 
     if (argc < 2)
       throw std::out_of_range ("expected at least one argument for filename of input file");
