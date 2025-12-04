@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "prime.h"
+
 int main ()
 {
   int num_found = 0;
