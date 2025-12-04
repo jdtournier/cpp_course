@@ -1,82 +1,34 @@
+#pragma once
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  *
- * (c) 2024 J-Donald Tournier (jdtournier@gmail.com)
+ * (c) 2025 J-Donald Tournier (jdtournier@gmail.com)
  *
  * With inspiration from:
  * - for sixel protocol: https://vt100.net/shuford/terminal/all_about_sixels.txt
  */
 
-#ifndef __TERMINAL_GRAPHICS_H__
-#define __TERMINAL_GRAPHICS_H__
-
-
 #include <iostream>
-#include <string>
-#include <sstream>
-#include <format>
-#include <string_view>
-#include <vector>
+#include <cassert>
 #include <array>
-#include <ranges>
 #include <limits>
 #include <cmath>
+#include <vector>
+#include <span>
+#include <format>
+#include <sstream>
 #include <iomanip>
-#include <algorithm>
-#include <stdexcept>
-#include <cstdlib>
 
 
-/**
- * \mainpage
- *
- * This header provides functionality for producing simple graphics on the
- * terminal.
- *
- * NOTE: the graphics are produced using the sixel protocol, which is not
- * supported by many terminals. At the time of writing, the following terminals
- * are known to have the necessary capabilities:
- *
- * - Linux: WezTerm, mlTerm, xterm
- * - macOS: WezTerm, iTerm2
- * - Windows: WezTerm, minTTY, Windows Terminal (Preview)
- *
- * To use in your code, place this file alongside your own code, and \#include
- * the file where necessary:
- *
- *     #include "terminal_graphics.h"
- *
- * At this point, you can make use of the functions. All functions are enclosed
- * in the TG namespace
- *
- * The main functions of interest are:
- *
- * - TG::imshow()  display a scalar image.
- * - TG::plot()    display a simple line plot for the data supplied
- *
- * For a more complete list of all of the available functionality, refer to the
- * TG namespace.
- *
- * By default, the colours are set up for use on a terminal with a dark
- * background. When using a light background, set the `WHITEBG` environment
- * variable. For example, in `bash`:
- * ```
- * $ export WHITEBG=1
- * ```
- *
- * Refer to the example code in `demo.cpp` (reproduced below) to see how to use
- * this functionality:
- *
- * \include demo.cpp
- */
 
 
 
 
 //! The namespace within which all functionality is placed
-namespace TG {
+namespace termviz {
 
   //! the data type to use to store intensities:
   using ctype = unsigned char;
@@ -124,27 +76,29 @@ namespace TG {
 
   //! VT100 code to set the cursor position to the top left of the screen
   /**
-   * This can be used in conjuction with TG::Clear to provide running updates.
+   * This can be used in conjuction with termviz::Clear to provide running updates.
    * Simply feed the string to `std::cout` to issue the instruction, for example:
    * ```
-   *   std::cout << TG::Clear;
+   *   std::cout << termviz::Clear;
    *   while (true) {
-   *     std::cout << TG::Home << "Current progress:\n";
-   *     TG::plot().add_line(...);
+   *     std::cout << termviz::Home << "Current progress:\n";
+   *     termviz::plot().render_line(...);
    *
    *     ...
    *     // perform computations, etc.
    *     ...
    *   }
    * ```
-   * \sa TG::Clear
+   * \sa termviz::Clear
    */
   constexpr inline std::string_view Home = "\033[H";
 
   //! VT100 code to clear the screen
-   /** \sa TG::Home
+   /** \sa termviz::Home
    */
   constexpr inline std::string_view Clear = "\033[2J";
+
+
 
   //! A simple class to hold a 2D image using datatype specified as `ValueType` template parameter
   template <typename ValueType>
@@ -261,6 +215,29 @@ namespace TG {
 
 
 
+  //! Render a line segment
+  /** This renders a straight line element from (x0,y0) to (x1,y1).
+   *
+   * See main class description for an explanation of the remaining
+   * arguments.
+   */
+  template <typename ImageType>
+    void render_line (ImageType& canvas, float x0, float y0, float x1, float y1,
+        int colour_index, int stiple = 0, float stiple_frac = 0.5);
+
+
+  //! Render text at the location specified
+  /** This renders the text in `text` at the location (x,y). By default,
+   * the text is centred on (x,y), but the location of the 'anchor' can be
+   * set using the `anchor_x` & `anchor_y` parameters.
+   *
+   * See main class description for an explanation of the remaining
+   * arguments.
+   */
+  template <typename ImageType>
+    inline void render_text (ImageType& canvas, const std::string& text, float x, float y,
+        float anchor_x = 0.5, float anchor_y = 0.5, int colour_index = 1);
+
 
   //! A class to hold the information about the font used for text rendering
   /**
@@ -274,8 +251,8 @@ namespace TG {
       constexpr int height () const;
       bool get (int offset, int x, int y) const;
 
-      template <typename ValueType>
-        void render (Image<ValueType>& canvas, char c, int x, int y, int colour_index) const;
+      template <typename ImageType>
+        void render (ImageType& canvas, char c, int x, int y, int colour_index) const;
 
       static constexpr const Font get_font (int size = 16);
 
@@ -286,183 +263,144 @@ namespace TG {
 
 
 
+  // **************************************************************************
+  //                   Plot implementation
+  // **************************************************************************
 
-  //! A class to provide plotting capabilities
-  /**
-   * This can be used stand-alone, but it is easier to use it via the
-   * TG::plot() function, which essentially simply returns an (anonymous) TG::Plot
-   * Object (refer to the documentation for TG::plot() for details).
-   *
-   * This class provides a canvas initialised to the desired size (in pixels),
-   * with a default font size (6 pixels wide by default). The
-   * `show_on_destruct` argument is `false` by default, but that be set to
-   * `true` to ensure the class destructor calls show() when the class goes out
-   * of scope (this is what the TG::plot() function relies on).
-   *
-   * By default, the colourmap is set to:
-   *
-   * | index |  red  | green | blue  | name     |
-   * |:-----:|:-----:|:-----:|:-----:|----------|
-   * |   0   |   0   |   0   |   0   | black    |
-   * |   1   |  100  |  100  |  100  | white    |
-   * |   2   |  100  |  100  |   0   | yellow   |
-   * |   3   |  100  |   0   |  100  | magenta  |
-   * |   4   |   0   |  100  |  100  | cyan     |
-   * |   5   |  100  |   0   |   0   | red      |
-   * |   6   |   0   |  100  |   0   | green    |
-   * |   7   |   0   |   0   |  100  | blue     |
-   *
-   * Most methods return a reference to the current instance. This allows them
-   * to be daisy-chained like this (again, this is what the TG::plot() syntax
-   * relies on):
-   *
-   *     std::vector<float> data (10);
-   *     ...
-   *     Plot p (256, 128);
-   *     p.set_xlim (0,10).set_ylim (-1,1).add_line(data).show();
-   *
-   * Many methods accept the following arguments:
-   *
-   * - `colour_index` specifies the colour to use (default: 2 - yellow)
-   * - `stiple` specifies the length of dashes (in pixels) if a dashed line
-   *   is desired. Set to zero (the default) for a full line.
-   * - `stiple_frac` specific the fraction of the dash interval to be
-   *   filled (default: 0.5).
-   * */
-  class Plot {
-    public:
-      Plot (int width, int height, bool show_on_destruct = false);
-      ~Plot ();
+  namespace {
 
-      //! clear canvas and reset X & Y limits
-      Plot& reset();
-      //! display the plot to the terminal
-      /** This is to be called after all rendering instructions have been
-       * invoked and the plot is ready to be displayed.
-       *
-       * If the plot has been constructed with `show_on_destruct` set to
-       * `true`, this will automatically be invoked by the destructor (this is
-       * the default behaviour when using the TG::plot() function).
-       */
-      Plot& show();
+    constexpr auto inf = std::numeric_limits<float>::infinity();
+    constexpr auto None = std::numeric_limits<float>::quiet_NaN();
 
-      //! set the colourmap if the default is not appropriate
-      Plot& set_colourmap (const ColourMap& colourmap);
+    const ColourMap& get_default_cmap();
 
-      //! disable transparent background for plot
-      Plot& disable_transparency ();
+    struct End {
+      mutable std::array<int,2> canvas_size = { 768, 512 };
+      mutable ColourMap cmap = get_default_cmap();
+      mutable bool zero_is_transparent = true;
+      mutable bool done = false;
+      mutable std::array<float,2> tick_spacing = { None, None };
+      mutable std::array<bool,2> grid = { true, true };
+      mutable std::array<float,2> xlim = { inf, -inf };
+      mutable std::array<float,2> ylim = { inf, -inf };
 
-      //! add a single line connection point (x0,y0) to (x1,y1).
-      /** If the X and/or Y limits have not yet been set (using set_xlim() or
-       * set_ylim(), this will automatically set them to 10% wider than the
-       * maximum range of the coordinates.
-       *
-       * See main class description for an explanation of the remaining
-       * arguments.
-       */
-      Plot& add_line (float x0, float y0, float x1, float y1,
-          int colour_index = 2, int stiple = 0, float stiple_frac = 0.5);
+      ColourMap& get_colourmap() const { return cmap; }
+      bool& get_transparent () const { return zero_is_transparent; }
 
-      //! plot the data series `y` along the x-axis
-      /** The input `y` can be any class that provides `.size()` and
-       * `operator[]()` methods (e.g. `std::vector`). This will plot the data
-       * points at locations (0,y[0]), (1,y[1]), ... , (n,y[n]).
-       *
-       * If the X and/or Y limits have not yet been set (using set_xlim() or
-       * set_ylim(), this will automatically set the X limit to (0,n), and the
-       * Y limit to 10% wider than the maximum range of the data in `y`.
-       *
-       * See main class description for an explanation of the remaining
-       * arguments.
-       */
-      template <class VerticesType>
-        Plot& add_line (const VerticesType& y,
-            int colour_index = 2, int stiple = 0, float stiple_frac = 0.5);
+      bool already_rendered () const { if (done) return true; done = true; return false; }
+      template <typename ImageType> void render (ImageType& canvas) const { }
+      std::array<int,2>& get_canvas_size() const { return canvas_size; }
+      std::array<float,2>& get_tick_spacing() const { return tick_spacing; }
+      std::array<bool,2>& get_grid() const { return grid; }
+      void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const { }
+      std::array<float,2>& get_xlim() const { return xlim; }
+      std::array<float,2>& get_ylim() const { return ylim; }
+    };
 
-      //! plot the data series `y` against the data series `x`
-      /** The inputs `x` & `y` can be any classes that provides `.size()` and
-       * `operator[]()` methods (e.g. `std::vector`). This will plot the data
-       * points at locations (x[0],[0]), (x[1],y[1]), ... , (x[n],y[n]).
-       *
-       * If the X and/or Y limits have not yet been set (using set_xlim() or
-       * set_ylim(), these will automatically set them to 10% wider
-       * than the maximum range of the data in `x` & `y` respectively.
-       *
-       * See main class description for an explanation of the remaining
-       * arguments.
-       */
-      template <class VerticesTypeX, class VerticesTypeY>
-        Plot& add_line (const VerticesTypeX& x, const VerticesTypeY& y,
-            int colour_index = 2, int stiple = 0, float stiple_frac = 0.5);
+    struct CanvasItem {
+      template <typename ImageType> void render (ImageType& canvas) const { }
+      void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const { }
+    };
 
-      //! add text at the location specified
-      /** This renders the text in `text` at ithe location (x,y). By default,
-       * the text is centred on (x,y), but the location of the 'anchor' can be
-       * set using the `anchor_x` & `anchor_y` parameters.
-       *
-       * See main class description for an explanation of the remaining
-       * arguments.
-       */
-      Plot& add_text (const std::string& text, float x, float y,
-          float anchor_x = 0.5, float anchor_y = 0.5, int colour_index = 1);
+    struct TextItem {
+      const std::string& text;
+      std::array<float,2> pos, anchor;
+      int colour_index;
+      template <typename ImageType> void render (ImageType& canvas) const;
+      void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const { }
+    };
 
-      //! set the range along the x-axis
-      /** Note that this can only be done once, and if required, should be
-       * invoked before any rendering commands.
-       */
-      Plot& set_xlim (float min, float max, float expand_by = 0.0);
-      //! set the range along the y-axis
-      /** Note that this can only be done once, and if required, should be
-       * invoked before any rendering commands.
-       */
-      Plot& set_ylim (float min, float max, float expand_by = 0.0);
-      //! set the interval of the gridlines, centered around zero
-      Plot& set_grid (float x_interval, float y_interval);
+    template <typename VectorType>
+      struct LineYItem {
+        const VectorType& y;
+        int colour_index, stiple;
+        float stiple_frac;
+        template <typename ImageType> void render (ImageType& canvas) const;
+        void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const;
+      };
 
-    private:
-      const bool show_on_destruct;
-      const Font font;
-      Image<ctype> canvas;
-      ColourMap cmap;
-      std::array<float,2> xlim, ylim;
-      float xgrid, ygrid;
-      int margin_x, margin_y;
-      bool zero_is_transparent;
+    template <typename VectorTypeX, typename VectorTypeY>
+      struct LineXYItem {
+        const VectorTypeX& x;
+        const VectorTypeY& y;
+        int colour_index, stiple;
+        float stiple_frac;
+        template <typename ImageType> void render (ImageType& canvas) const;
+        void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const;
 
-      template <class ImageType>
-        static void line_x (ImageType& canvas, float x0, float y0, float x1, float y1,
-            int colour_index, int stiple, float stiple_frac);
+      };
 
-      float mapx (float x) const;
-      float mapy (float y) const;
 
-      static ColourMap default_cmap;
-      static const ColourMap& get_default_cmap();
-  };
 
-  //! Convenience function to use for immediate rendering
-  /**
-   * This returns a (temporary) Plot object, which methods can be called on,
-   * and daisy-chain to achieve the desired series of commands. The
-   * Plot::show() method will implicitly be called when the temporary object is
-   * destroyed, in other words immediately after the closing semicolon.
-   *
-   * For example:
-   *
-   *     std::vector x (10), y(10);
-   *     ...
-   *     TG::plot (256,128)
-   *       .set_ylim (-1,2)
-   *       .add_line (x, y, 3)
-   *       .set_grid (2, 0.5)
-   *       .add_text ("my plot", 5, 2);
-   *
-   * See methods in TG::Plot for details.
-   */
-  inline Plot plot (int width = 512, int height = 256)
-  {
-    return Plot (width, height, true);
+
+
+    template <typename Item, typename Previous>
+      struct Entry {
+        public:
+          const Item item;
+          const Previous prev;
+
+          ~Entry() { if (!already_rendered()) main_render(); }
+
+          template <typename VectorType>
+            auto line (const VectorType& y, int colour_index = 2, int stiple = 0, float stiple_frac = 0.5) const
+            -> Entry<LineYItem<VectorType>,decltype(*this)> { return { { y, colour_index, stiple, stiple_frac }, *this }; }
+
+          template <typename VectorTypeX, typename VectorTypeY>
+            auto line (const VectorTypeX& x, const VectorTypeY& y, int colour_index = 2, int stiple = 0, float stiple_frac = 0.5) const
+            -> Entry<LineXYItem<VectorTypeX,VectorTypeY>,decltype(*this)> {
+              if (x.size() != y.size())
+                throw std::runtime_error ("X & Y dimensions do not match");
+              return { { x, y, colour_index, stiple, stiple_frac }, *this };
+            }
+
+          auto text (const std::string& text, float x, float y, float anchor_x = 0.5, float anchor_y = 0.5, int colour_index = 1) const
+            -> Entry<TextItem,decltype(*this)> { return { { text, { x, y }, { anchor_x, anchor_y} , colour_index }, *this }; }
+
+
+          const Entry& xlim (float x_min, float x_max) const { get_xlim() = { x_min, x_max }; return *this; }
+          const Entry& ylim (float y_min, float y_max) const { get_ylim() = { y_min, y_max }; return *this; }
+          const Entry& ticks (float x_spacing, float y_spacing) const { get_tick_spacing() = { x_spacing, y_spacing }; return *this; }
+          const Entry& grid (bool show_xgrid, bool show_ygrid) const { get_grid() = { show_xgrid, show_ygrid }; return *this; }
+          const Entry& colourmap (const ColourMap& cmap) const { get_colourmap() = cmap; return *this; }
+          const Entry& transparent (bool is_transparent) const { get_transparent() = is_transparent; return *this; }
+
+
+        private:
+          template <typename OtherItem, typename OtherPrevious> friend class Entry;
+
+          ColourMap& get_colourmap () const { return prev.get_colourmap(); }
+          bool& get_transparent () const { return prev.get_transparent(); }
+          std::array<int,2>& get_canvas_size() const { return prev.get_canvas_size(); }
+          std::array<float,2>& get_tick_spacing() const { return prev.get_tick_spacing(); }
+          std::array<bool,2>& get_grid() const { return prev.get_grid(); }
+          std::array<float,2>& get_xlim() const { return prev.get_xlim(); }
+          std::array<float,2>& get_ylim() const { return prev.get_ylim(); }
+
+          void update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const {
+            prev.update_lim (xlim, ylim);
+            item.update_lim (xlim, ylim);
+          }
+
+          bool already_rendered () const { return prev.already_rendered(); }
+          void main_render () const ;
+          template <typename ImageType> void render (ImageType& canvas) const { prev.render (canvas); item.render (canvas); }
+
+      };
+
+
+
   }
+
+
+  inline Entry<CanvasItem,End> plot (int width = 900, int height = 300) { return { { } , { width, height } }; }
+
+
+
+
+
+
+
 
 
 
@@ -531,6 +469,8 @@ namespace TG {
     }
     return cmap;
   }
+
+
 
 
 
@@ -625,6 +565,9 @@ namespace TG {
     inline decltype(std::declval<const ImageType>()(0,0)) magnify<ImageType>::operator() (int x, int y) const {
       return im (x/factor, y/factor);
     }
+
+
+
 
 
 
@@ -747,19 +690,21 @@ namespace TG {
 
 
 
-
-
-
-
   // **************************************************************************
-  //                   Plot implementation
+  //                   line drawing implementation
   // **************************************************************************
 
-  inline ColourMap Plot::default_cmap;
+  namespace {
 
-  inline const ColourMap& Plot::get_default_cmap()
-  {
-    if (default_cmap.empty()) {
+
+    inline const ColourMap& get_default_cmap()
+    {
+      static  ColourMap default_cmap;
+
+      if (!default_cmap.empty())
+        return default_cmap;
+
+
       default_cmap = {
         {   0,   0,   0 },
         { 100, 100, 100 },
@@ -769,259 +714,255 @@ namespace TG {
         { 100,  20,  20 },
         {  20, 100,  20 },
         {  20,  20, 100 }
-        };
+      };
 
-    // disable deprecation warning for getenv() from Visual Studio
-    // our usage should be safe given we only check whether variable is set
-    // the value of the variable is never accessed
+      // disable deprecation warning for getenv() from Visual Studio
+      // our usage should be safe given we only check whether variable is set
+      // the value of the variable is never accessed
 #ifdef _MSC_VER
 #pragma warning(disable : 4996)
 #endif
-    if (std::getenv("WHITEBG") != nullptr)
-      for (auto& x : default_cmap)
-        for (auto& c : x)
-          c = 100-c;
-    }
-    return default_cmap;
-  }
+      if (std::getenv("WHITEBG") != nullptr)
+        for (auto& x : default_cmap)
+          for (auto& c : x)
+            c = 100-c;
 
-
-  constexpr float lim_expand_by_factor = 0.1f;
-
-  template <class ImageType>
-    inline void Plot::line_x (ImageType& canvas, float x0, float y0, float x1, float y1,
-        int colour_index, int stiple, float stiple_frac)
-    {
-      if (x0 > x1) {
-        std::swap (x0, x1);
-        std::swap (y0, y1);
-      }
-
-      float x_range = x1 - x0;
-      float y_range = y1 - y0;
-
-      int xmax = std::min (static_cast<int>(x1+1.0f), static_cast<int>(canvas.width()));
-      for (int x = std::max (std::round (x0), 0.0f); x < xmax; ++x) {
-        if (stiple > 0)
-          if ( x%stiple >= stiple_frac*stiple)
-            continue;
-        int y = std::round (y0 + y_range*(x-x0)/x_range);
-        if (y >= 0 && y < canvas.height())
-          canvas(x,y) = colour_index;
-      }
+      return default_cmap;
     }
 
 
-  inline Plot::Plot (int width, int height, bool show_on_destruct) :
-    show_on_destruct (show_on_destruct),
-    font (Font::get_font()),
-    canvas (width, height),
-    cmap (get_default_cmap()),
-    zero_is_transparent (true)
-  {
-    margin_x = 10*font.width();
-    margin_y = 2*font.height();
-    reset();
-  }
 
-  inline Plot::~Plot ()
-  {
-    if (show_on_destruct)
-      show();
-  }
+    template <class ImageType>
+      inline void line_x (ImageType& canvas, float x0, float y0, float x1, float y1,
+          int colour_index, int stiple, float stiple_frac)
+      {
+        if (x0 > x1) {
+          std::swap (x0, x1);
+          std::swap (y0, y1);
+        }
 
-  inline Plot& Plot::reset ()
-  {
-    xlim = { NAN, NAN };
-    ylim = { NAN, NAN };
-    xgrid = ygrid = NAN;
-    canvas.clear();
-    return *this;
-  }
+        float x_range = x1 - x0;
+        float y_range = y1 - y0;
 
-  inline Plot& Plot::show ()
-  {
-    if (std::isfinite (xgrid)) {
-      for (float x = xgrid*std::ceil (xlim[0]/xgrid); x < xlim[1]; x += xgrid) {
-        add_line (x, ylim[0], x, ylim[1], 1, ( x == 0.0 ? 0 : 10 ), 0.1);
-        if (margin_y) {
-          std::stringstream legend;
-          legend << std::setprecision (3) << x;
-          add_text (legend.str(), x, ylim[0], 0.5, 1.5);
+        int xmax = std::min (static_cast<int>(x1+1.0f), static_cast<int>(canvas.width()));
+        for (int x = std::max (std::round (x0), 0.0f); x < xmax; ++x) {
+          if (stiple > 0)
+            if ( x%stiple >= stiple_frac*stiple)
+              continue;
+          int y = std::round (y0 + y_range*(x-x0)/x_range);
+          if (y >= 0 && y < canvas.height())
+            canvas(x,y) = colour_index;
         }
       }
-    }
-    if (std::isfinite (ygrid)) {
-      for (float y = ygrid*std::ceil (ylim[0]/ygrid); y < ylim[1]; y += ygrid) {
-        add_line (xlim[0], y, xlim[1], y, 1, ( y == 0.0 ? 0 : 10 ), 0.1);
-        if (margin_x) {
-          std::stringstream legend;
-          legend << std::setprecision (3) << y << " ";
-          add_text (legend.str(), xlim[0], y, 1.0, 0.5);
-        }
+
+  }
+
+
+
+
+  template <typename ImageType>
+    inline void render_line (ImageType& canvas, float x0, float y0, float x1, float y1,
+        int colour_index, int stiple, float stiple_frac)
+    {
+      struct CanvasView {
+        ImageType& canvas;
+        const bool transpose;
+        int width () const { return transpose ? canvas.height() : canvas.width(); }
+        int height () const { return transpose ? canvas.width() : canvas.height(); }
+        ctype& operator() (int x, int y) { return transpose ? canvas(y,x) : canvas(x,y); }
+      };
+
+      bool transposed = std::abs (x1-x0) < std::abs (y1-y0);
+      if (transposed) {
+        std::swap (x0, y0);
+        std::swap (x1, y1);
       }
+      CanvasView view = { canvas, transposed };
+      line_x (view, x0, y0, x1, y1, colour_index, stiple, stiple_frac);
     }
 
-    imshow (canvas, cmap, zero_is_transparent);
-
-    return *this;
-  }
-
-  inline Plot& Plot::set_colourmap (const ColourMap& colourmap)
-  {
-    cmap = colourmap;
-    return *this;
-  }
-
-  inline Plot& Plot::disable_transparency ()
-  {
-    zero_is_transparent = false;
-    return *this;
-  }
-
-  inline Plot& Plot::set_xlim (float min, float max, float expand_by)
-  {
-    if (std::isfinite (xlim[0]) || std::isfinite (xlim[1]))
-      throw std::runtime_error ("xlim already set (maybe implicitly by previous calls)");
-
-    const float delta = expand_by * (max - min);
-    xlim[0] = min - delta;
-    xlim[1] = max + delta;
-    if (!std::isfinite (xgrid))
-      xgrid = (xlim[1] - xlim[0])/5.0;
-
-    return *this;
-  }
-
-  inline Plot& Plot::set_ylim (float min, float max, float expand_by)
-  {
-    if (std::isfinite (ylim[0]) || std::isfinite (ylim[1]))
-      throw std::runtime_error ("ylim already set (maybe implicitly by previous calls)");
-
-    const float delta = expand_by * (max - min);
-    ylim[0] = min - delta;
-    ylim[1] = max + delta;
-    if (!std::isfinite (ygrid))
-      ygrid = (ylim[1] - ylim[0])/5.0;
-
-    return *this;
-  }
-
-  inline Plot& Plot::set_grid (float x_interval, float y_interval)
-  {
-    xgrid = x_interval;
-    ygrid = y_interval;
-    return *this;
-  }
-
-  inline Plot& Plot::add_line (float x0, float y0, float x1, float y1,
-      int colour_index, int stiple, float stiple_frac)
-  {
-    if (!std::isfinite (xlim[0]) || !std::isfinite (xlim[1]))
-      set_xlim (std::min (x0, x1), std::max (x0, x1), lim_expand_by_factor);
-
-    if (!std::isfinite (ylim[0]) || !std::isfinite (ylim[1]))
-      set_ylim (std::min (y0, y1), std::max (y0, y1), lim_expand_by_factor);
-
-    x0 = mapx (x0);
-    y0 = mapy (y0);
-    x1 = mapx (x1);
-    y1 = mapy (y1);
-
-    struct CanvasView {
-      Image<ctype>& canvas;
-      const int x_offset, y_offset;
-      const bool transpose;
-      int width () const { return transpose ? canvas.height()-y_offset : canvas.width()-x_offset; }
-      int height () const { return transpose ? canvas.width()-x_offset : canvas.height()-y_offset; }
-      ctype& operator() (int x, int y) { return transpose ? canvas(y+x_offset, x) : canvas(x+x_offset,y); }
-    };
-
-    bool transposed = std::abs (x1-x0) < std::abs (y1-y0);
-    if (transposed) {
-      std::swap (x0, y0);
-      std::swap (x1, y1);
-    }
-    CanvasView view = { canvas, margin_x, margin_y, transposed };
-    line_x (view, x0, y0, x1, y1, colour_index, stiple, stiple_frac);
-
-    return *this;
-  }
 
 
-  template <class VerticesType>
-    inline Plot& Plot::add_line (const VerticesType& y,
-        int colour_index, int stiple, float stiple_frac)
+
+  template <typename ImageType>
+    inline void render_text (ImageType& canvas, const std::string& text, float x, float y,
+        float anchor_x, float anchor_y, int colour_index)
     {
-      if (!std::isfinite (xlim[0]) || !std::isfinite (xlim[1]))
-        set_xlim (0, y.size()-1, 0.0);
+      auto f = Font::get_font();
+      const int text_width = f.width() * text.size();
+      int posx = std::round (x - anchor_x * text_width);
+      int posy = std::round (y - (1.0-anchor_y) * f.height());
 
-      if (!std::isfinite (ylim[0]) || !std::isfinite (ylim[1]))
-        set_ylim (std::ranges::min (y), std::ranges::max (y), lim_expand_by_factor);
-
-      for (std::size_t n = 0; n < y.size()-1; ++n)
-        add_line (n, y[n], n+1, y[n+1], colour_index, stiple, stiple_frac);
-
-      return *this;
+      for (std::size_t n = 0; n < text.size(); ++n)
+        f.render (canvas, text[n], posx+n*f.width(), posy, colour_index);
     }
 
 
-  template <class VerticesTypeX, class VerticesTypeY>
-    inline Plot& Plot::add_line (const VerticesTypeX& x, const VerticesTypeY& y,
-        int colour_index, int stiple, float stiple_frac)
+
+
+  namespace {
+
+    inline float compute_tick_spacing (const std::array<float,2>& lim, float init_spacing)
     {
-      if (x.size() != y.size())
-        throw std::runtime_error ("number of x & y vertices do not match");
+      double tick = (lim[1]-lim[0])/init_spacing;
+      double mult = std::pow(10.0, std::floor (std::log10 (tick)));
+      double scaled = tick/mult;
+      if (scaled < 2.0)
+        return 2.0*mult;
+      if (scaled < 5.0)
+        return 5.0*mult;
+      return 10.0*mult;
+    }
 
-      if (!std::isfinite (xlim[0]) || !std::isfinite (xlim[1]))
-        set_xlim (std::ranges::min (x), std::ranges::max (x), lim_expand_by_factor);
+    inline void refine_lim (std::array<float,2>& lim, float spacing)
+    {
+      lim[0] = spacing * std::floor (lim[0] / spacing);
+      lim[1] = spacing * std::ceil (lim[1] / spacing);
+    }
 
-      if (!std::isfinite (ylim[0]) || !std::isfinite (ylim[1]))
-        set_ylim (std::ranges::min (y), std::ranges::max (y), lim_expand_by_factor);
+    template <typename Item, typename Previous>
+      inline void Entry<Item,Previous>::main_render () const {
+        auto canvas_size = get_canvas_size();
+        auto tick_spacing = get_tick_spacing();
+        auto grid = get_grid();
 
-      for (std::size_t n = 0; n < x.size()-1; ++n)
-        add_line (x[n], y[n], x[n+1], y[n+1], colour_index, stiple, stiple_frac);
+        Image<ctype> canvas (canvas_size[0], canvas_size[1]);
 
-      return *this;
+        std::array<float,2> xlim = { inf, -inf }, ylim = { inf, -inf };
+        update_lim (xlim, ylim);
+
+        auto xlim_set = get_xlim();
+        auto ylim_set = get_ylim();
+
+        const bool xlim_manual = std::isfinite (xlim_set[0]) && std::isfinite (xlim_set[1]);
+        const bool ylim_manual = std::isfinite (ylim_set[0]) && std::isfinite (ylim_set[1]);
+
+        const bool show_xticks = !( tick_spacing[0] <= 0.0 );
+        const bool show_yticks = !( tick_spacing[1] <= 0.0 );
+
+        if (xlim_manual) xlim = xlim_set;
+        if (ylim_manual) ylim = ylim_set;
+
+        auto font = Font::get_font();
+        int margin_left = 10*font.width();
+        int margin_bottom = 2*font.height();
+        int margin_right = 3*font.width();
+        int margin_top = 1*font.height();
+
+        auto xtick_spacing = compute_tick_spacing (xlim, std::max (8.0f, (canvas.width()-margin_left)/(5.0f*font.height())));
+        auto ytick_spacing = compute_tick_spacing (ylim, std::max (8.0f, (canvas.height()-margin_bottom)/(5.0f*font.height())));
+
+        if (!xlim_manual) refine_lim (xlim, xtick_spacing);
+        if (!ylim_manual) refine_lim (ylim, ytick_spacing);
+
+        if (!std::isfinite (tick_spacing[0]) || tick_spacing[0] <= 0.0) tick_spacing[0] = xtick_spacing;
+        if (!std::isfinite (tick_spacing[1]) || tick_spacing[1] <= 0.0) tick_spacing[1] = ytick_spacing;
+
+
+        struct CanvasView {
+          Image<ctype>& canvas;
+          int margin_left, margin_bottom, margin_right, margin_top;
+          std::array<float,2> xlim, ylim;
+          int width () const { return canvas.width() - margin_left - margin_right; }
+          int height () const { return canvas.height() - margin_bottom - margin_top; }
+          float mapx (float x) const { return (width()-1) * (x-xlim[0])/(xlim[1]-xlim[0]); }
+          float mapy (float y) const { return (height()-1) * (1.0 - (y-ylim[0])/(ylim[1]-ylim[0])); }
+          ctype& operator() (int x, int y) { return canvas(x+margin_left,y+margin_top); }
+        };
+
+        CanvasView plot_area = { canvas, margin_left, margin_bottom, margin_right, margin_top, xlim, ylim };
+
+        for (int n = std::ceil (xlim[0]/tick_spacing[0]); n <= xlim[1]/tick_spacing[0]; n++) {
+          const float x = n*tick_spacing[0];
+          if (grid[0])
+            render_line (plot_area, plot_area.mapx(x), plot_area.mapy(ylim[0]), plot_area.mapx(x), plot_area.mapy(ylim[1]), 1, 10, ( n == 0 ? 0.7 : 0.1 ));
+
+          if (show_xticks) {
+            std::stringstream legend;
+            legend << std::setprecision (3) << x;
+            render_text (canvas, legend.str(), margin_left+plot_area.mapx(x), margin_top+plot_area.mapy (ylim[0]), 0.5, 1.5);
+            render_line (plot_area, plot_area.mapx(x), plot_area.mapy(ylim[0]), plot_area.mapx(x), plot_area.mapy(ylim[0])-5, 1);
+          }
+        }
+
+        for (int n = std::ceil (ylim[0]/tick_spacing[1]); n <= ylim[1]/tick_spacing[1]; n++) {
+          const float y = n*tick_spacing[1];
+          if (grid[1])
+            render_line (plot_area, plot_area.mapx(xlim[0]), plot_area.mapy(y), plot_area.mapx(xlim[1]), plot_area.mapy(y), 1, 10, ( n == 0 ? 0.7 : 0.1 ));
+
+          if (show_yticks) {
+            std::stringstream legend;
+            legend << std::setprecision (3) << y << " ";
+            render_text (canvas, legend.str(), margin_left+plot_area.mapx(xlim[0]), margin_top+plot_area.mapy(y), 1.0, 0.5);
+            render_line (plot_area, plot_area.mapx(xlim[0]), plot_area.mapy(y), plot_area.mapx(xlim[0])+5, plot_area.mapy(y), 1);
+
+          }
+        }
+
+        prev.render (plot_area);
+        item.render (plot_area);
+
+        imshow (canvas, get_colourmap(), get_transparent());
+      }
+
+
+    template <typename VectorType>
+      inline std::array<float,2> get_range (const VectorType& v)
+      {
+        std::array<float,2> lim = { inf, -inf };
+        for (const auto& x : v) {
+          lim[0] = std::min (lim[0], static_cast<float>(x));
+          lim[1] = std::max (lim[1], static_cast<float>(x));
+        }
+        return lim;
+      }
+
+
+    inline void __update_lim (std::array<float,2>& current_lim, const std::array<float,2>& new_lim)
+    {
+      current_lim[0] = std::min (current_lim[0], new_lim[0]);
+      current_lim[1] = std::max (current_lim[1], new_lim[1]);
     }
 
 
 
+    template <typename VectorType>
+      inline void LineYItem<VectorType>::update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const
+      {
+        __update_lim (xlim, { 0.0f, static_cast<float>(y.size()) });
+        __update_lim (ylim, get_range(y));
+      }
 
-  inline Plot& Plot::add_text (const std::string& text, float x, float y,
-      float anchor_x, float anchor_y, int colour_index)
-  {
-    auto f = Font::get_font();
-    const int text_width = f.width() * text.size();
-    int posx = std::round (margin_x + mapx (x) - anchor_x * text_width);
-    int posy = std::round (mapy (y) - (1.0-anchor_y) * f.height());
 
-    for (std::size_t n = 0; n < text.size(); ++n) {
-      f.render (canvas, text[n], posx+n*f.width(), posy, colour_index);
-    }
+    template <typename VectorTypeX, typename VectorTypeY>
+      inline void LineXYItem<VectorTypeX,VectorTypeY>::update_lim (std::array<float,2>& xlim, std::array<float,2>& ylim) const
+      {
+        __update_lim (xlim, get_range(x));
+        __update_lim (ylim, get_range(y));
+      }
 
-    return *this;
+
+    template <typename ImageType>
+      inline void TextItem::render (ImageType& canvas) const
+      {
+        render_text (canvas, text, canvas.mapx(pos[0]), canvas.mapy(pos[1]), anchor[0], anchor[1], colour_index);
+      }
+
+    template <typename VectorType> template <typename ImageType>
+      inline void LineYItem<VectorType>::render (ImageType& canvas) const
+      {
+        for (std::size_t n = 0; n < y.size()-1; ++n)
+          render_line (canvas, canvas.mapx(n), canvas.mapy(y[n]), canvas.mapx(n+1), canvas.mapy(y[n+1]), colour_index, stiple, stiple_frac);
+      }
+
+    template <typename VectorTypeX, typename VectorTypeY> template <typename ImageType>
+      inline void LineXYItem<VectorTypeX,VectorTypeY>::render (ImageType& canvas) const
+      {
+        for (std::size_t n = 0; n < x.size()-1; ++n)
+          render_line (canvas, canvas.mapx(x[n]), canvas.mapy(y[n]), canvas.mapx(x[n+1]), canvas.mapy(y[n+1]), colour_index, stiple, stiple_frac);
+      }
+
   }
-
-
-
-
-  inline float Plot::mapx (float x) const
-  {
-    return (canvas.width()-margin_x) * (x-xlim[0])/(xlim[1]-xlim[0]);
-  }
-
-
-  inline float Plot::mapy (float y) const
-  {
-    return (canvas.height()-margin_y) * (1.0 - (y-ylim[0])/(ylim[1]-ylim[0]));
-  }
-
-
-
-
-
-
 
 
 
@@ -1044,8 +985,8 @@ namespace TG {
     return data[index] & (1U<<shift);
   }
 
-  template <typename ValueType>
-    inline void Font::render (Image<ValueType>& canvas, char c, int x, int y, int colour_index) const
+  template <typename ImageType>
+    inline void Font::render (ImageType& canvas, char c, int x, int y, int colour_index) const
     {
 
       static constexpr char mapping [] = {
@@ -1132,6 +1073,7 @@ namespace TG {
 
 
 
+
 }
 
-#endif
+
