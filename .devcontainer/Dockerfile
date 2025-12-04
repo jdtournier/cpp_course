@@ -16,4 +16,5 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
      && apt-get -y install --no-install-recommends gdb
 
 COPY build /usr/local/bin/
+COPY zip_all /usr/local/bin/
 COPY termviz.h /usr/local/include/

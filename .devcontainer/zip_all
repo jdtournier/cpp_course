@@ -1,0 +1,6 @@
+#!/bin/bash
+
+( 
+    cd $CODESPACE_VSCODE_FOLDER
+    zip -r submission.zip [^.]*/ -i \*.cpp -i \*.cc -i \*.h -i \*.hpp
+)
