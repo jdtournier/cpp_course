@@ -1,14 +1,14 @@
 #include <iostream>
 
-enum MaritalStatus {
+enum class MaritalStatus {
   Single,
   Married,
   Widowed,
   Divorced
 };
 
-enum ProbeType {
-  //Single,   // <- raises an error due to a naming conflict!
+enum class ProbeType {
+  Single,  // <- this is no longer a problem: it's in a different scope
   Twin,
   Complex,
   Array
@@ -16,18 +16,13 @@ enum ProbeType {
 
 int main ()
 {
-  ProbeType p = Twin;
-  MaritalStatus m = Single;
+  ProbeType p = ProbeType::Single;
+  MaritalStatus m = MaritalStatus::Single;
 
-  if (p == m)   // <- raises a warning, but compiles anyway!
+  if (p == m)   // <- this now raises a error, and the program cannot compile
     std::cout << "match\n";
   else
     std::cout << "no match\n";
-
-  // We get a match here, since the two values are the first ones listed in
-  // their respective enums, and so will by default map to the same integer
-  // representation. But this of course makes absolutely no sense: how can we
-  // compare marital status with the type of imaging probe?!?
 
   return 0;
 }
