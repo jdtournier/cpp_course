@@ -17,7 +17,7 @@ int main (int argc, char* argv[])
     if (argc < 2)
       throw std::out_of_range ("expected at least one argument for filename of input file");
 
-    auto data = load_patient_data (argv[1]);
+    auto data = load_study_data (argv[1]);
 
     for (const auto& pat : data)
       std::cout << compute_mean (pat) << " ± " << compute_stddev (pat) << "\n";

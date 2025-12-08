@@ -7,8 +7,9 @@
 
 #include "debug.h"
 #include "load_data.h"
+#include "treatment.h"
 
-std::vector<std::vector<float>> load_patient_data (const std::string& filename)
+std::vector<std::vector<float>> load_study_data (const std::string& filename)
 {
   debug::log ("loading file \"" + filename + "\"...");
 
@@ -22,28 +23,31 @@ std::vector<std::vector<float>> load_patient_data (const std::string& filename)
   while (std::getline (infile, line)) {
     std::istringstream line_stream (line);
 
-    std::string patient_ID;
-    line_stream >> patient_ID;
+    std::string subject_ID;
+    line_stream >> subject_ID;
+
+    std::string treatment_group;
+    line_stream >> treatment_group;
 
     // ignore blank lines:
     if (!line_stream)
       continue;
 
-    std::vector<float> pat_data;
+    std::vector<float> subj_data;
     float value;
     while (line_stream >> value)
-      pat_data.push_back (value);
+      subj_data.push_back (value);
 
-    if (pat_data.empty())
-      throw std::runtime_error ("no data for patient \"" + patient_ID + "\"");
+    if (subj_data.empty())
+      throw std::runtime_error ("no data for subject \"" + subject_ID + "\"");
 
-    data.push_back (pat_data);
+    data.push_back (subj_data);
   }
 
   if (data.empty())
     throw std::runtime_error ("file \"" + filename + "\" contains no usable data");
 
-  debug::log ("found " + std::to_string(data.size()) + " patients in file \"" + filename + "\"");
+  debug::log ("found " + std::to_string(data.size()) + " subjects in file \"" + filename + "\"");
 
   return data;
 }
