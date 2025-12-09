@@ -1,20 +1,23 @@
 #include <iostream>
 #include <cmath>
 
+// define a struct to hold the return values:
+struct SqrtResult { double value; int niter; };
+
 // This function computes the square root using the Babylonian method:
-double babylonian_sqrt (const double value, int& niter)
-{
+SqrtResult babylonian_sqrt (const double value)   // <- function now returns the struct
+{                                         // ^ no need to pass niter by reference
   double x_current = value;   // <- the current estimate
   double x_prev = 0.0;        // <- the previous estimate
 
-  niter = 0;
+  int niter = 0;
   while (std::abs (x_current-x_prev) > 1e-12) {
     x_prev = x_current;
     x_current = 0.5 * (x_prev + value/x_prev);
     niter++;
   }
 
-  return x_current;
+  return { x_current, niter };   // <- return the result using aggregate initialisation
 }
 
 
@@ -24,9 +27,8 @@ int main ()
   double x;
   std::cin >> x;
 
-  int n;   // <- note we need to provide an integer to store the number of iterations!
-  double val = babylonian_sqrt (x, n);
-  std::cout << "Series evaluates to: " << val << " in " << n << " iterations\n";
+  auto res = babylonian_sqrt (x);    // <- function now takes a single argument
+  std::cout << "Series evaluates to: " << res.value << " in " << res.niter << " iterations\n";
 
   return 0;
 }
