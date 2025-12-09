@@ -17,14 +17,14 @@ int main (int argc, char* argv[])
     if (argc < 2)
       throw std::out_of_range ("expected at least one argument for filename of input file");
 
-    auto data = load_patient_data (argv[1]);
+    auto list = load_patient_data (argv[1]);
 
-    for (const auto& pat : data)
-      std::cout << compute_mean (pat) << " ± " << compute_stddev (pat) << "\n";
+    for (const auto& pat : list)
+      std::cout << pat.ID << ": " << compute_mean (pat.data) << " ± " << compute_stddev (pat.data) << "\n";
 
     auto fig = termviz::figure();
-    for (const auto& y : data)
-        fig.plot (y);
+    for (const auto& p : list)
+        fig.plot (p.data);
 
     // end of main processing block
   }
