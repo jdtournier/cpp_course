@@ -1,10 +1,16 @@
 #include <iostream>
 #include <cmath>
 
-void get_values_from_user (float& a, float &b, float& c)
+// define a struct to hold the values we need:
+struct TriangleSides { float a, b, c; };
+
+// and have this function return an instance of that struct:
+TriangleSides get_values_from_user ()
 {
   std::cout << "Please enter the lengths of the three sides of the triangle: ";
-  std::cin >> a >> b >> c;
+  TriangleSides s;
+  std::cin >> s.a >> s.b >> s.c;
+  return s;
 }
 
 float compute_area_of_triangle (const float a, const float b, const float c)
@@ -15,9 +21,11 @@ float compute_area_of_triangle (const float a, const float b, const float c)
 
 int main ()
 {
-  float a, b, c;
-  get_values_from_user(a, b, c);
-  std::cout << "area = " << compute_area_of_triangle (a, b, c) << "\n";
+  // now we can capture all 3 values in one return struct variable:
+  auto s = get_values_from_user();
+
+  // and use them in the next call:
+  std::cout << "area = " << compute_area_of_triangle (s.a, s.b, s.c) << "\n";
 
   return 0;
 }
