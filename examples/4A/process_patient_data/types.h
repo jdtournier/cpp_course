@@ -1,7 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 using dtype = float;
-using PatientDataList = std::vector<std::vector<dtype>>;
+
+struct PatientData {
+  std::string ID;
+  std::vector<dtype> data;
+};
+
+using PatientDataList = std::vector<PatientData>;
 
