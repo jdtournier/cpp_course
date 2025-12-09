@@ -37,7 +37,7 @@ PatientDataList load_patient_data (const std::string& filename)
     if (pat_data.empty())
       throw std::runtime_error ("no data for patient \"" + patient_ID + "\"");
 
-    data.push_back (pat_data);
+    data.push_back ({ patient_ID, pat_data });
   }
 
   if (data.empty())
