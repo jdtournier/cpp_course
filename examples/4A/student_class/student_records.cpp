@@ -5,9 +5,17 @@
 class Student {
   public:
     int get_ID () const { return m_ID; }
+    void set_ID (int ID) { m_ID = ID; }
+
     const std::string& get_name () const { return m_name; }
+    void set_name (const std::string& name) { m_name = name; }
+
     float get_GPA () const { return m_GPA; }
+    void set_GPA (float GPA) { m_GPA = GPA; }
+
     const std::array<int,3>& get_DOB () const { return m_dob; }
+    void set_DOB (const std::array<int,3>& dob) { m_dob = dob; }
+
   private:
     int m_ID = 0;
     std::string m_name;
@@ -18,6 +26,12 @@ class Student {
 int main ()
 {
   Student s;
+
+  s.set_name ("Jane Doe");
+  s.set_ID (2349423);
+  s.set_GPA (3.8);
+  s.set_DOB ({ 3, 6, 2001 });
+
   std::cout << "student: \"" << s.get_name() << "\", DOB: "
       << s.get_DOB()[0] << "/" << s.get_DOB()[1] << "/" << s.get_DOB()[2]
       << ", ID: " << s.get_ID() << ", GPA = " << s.get_GPA() << "\n";
