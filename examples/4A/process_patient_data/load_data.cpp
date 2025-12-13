@@ -7,6 +7,7 @@
 
 #include "debug.h"
 #include "load_data.h"
+#include "patient.h"
 
 PatientDataList load_patient_data (const std::string& filename)
 {
@@ -37,7 +38,9 @@ PatientDataList load_patient_data (const std::string& filename)
     if (pat_data.empty())
       throw std::runtime_error ("no data for patient \"" + patient_ID + "\"");
 
-    data.push_back ({ patient_ID, pat_data });
+    PatientData patient;
+    patient.init (patient_ID, pat_data);
+    data.push_back (patient);
   }
 
   if (data.empty())
