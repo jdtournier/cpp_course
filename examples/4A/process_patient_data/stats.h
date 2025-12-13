@@ -12,3 +12,4 @@ inline dtype pow2 (dtype x) { return x*x; }
 
 double compute_mean (const std::vector<dtype>& data);
 double compute_stddev (const std::vector<dtype>& data);
+

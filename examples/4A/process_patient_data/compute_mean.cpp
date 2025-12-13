@@ -4,7 +4,7 @@
 
 #include "debug.h"
 #include "load_data.h"
-#include "stats.h"
+#include "patient.h"
 
 
 int main (int argc, char* argv[])
@@ -20,11 +20,11 @@ int main (int argc, char* argv[])
     auto list = load_patient_data (argv[1]);
 
     for (const auto& pat : list)
-      std::cout << pat.ID << ": " << compute_mean (pat.data) << " ± " << compute_stddev (pat.data) << "\n";
+      std::cout << pat.ID() << ": " << pat.get_mean() << " ± " << pat.get_stddev() << "\n";
 
     auto fig = termviz::figure();
     for (const auto& p : list)
-        fig.plot (p.data);
+        fig.plot (p.data());
 
     // end of main processing block
   }
