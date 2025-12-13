@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
-#include "types.h"
+#include "patient.h"
 
 PatientDataList load_patient_data (const std::string& filename);
