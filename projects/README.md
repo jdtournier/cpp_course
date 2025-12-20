@@ -3,21 +3,17 @@
 This repo holds project descriptions, data and solutions for the projects to be used for teaching on the [Object-Oriented Programming course](../).
 
 ## DNA shotgun sequencing
-- [instructions](DNA_shotgun_sequencing/assignment.md)
+- [instructions](DNA_shotgun_sequencing/README.md)
 - [data](DNA_shotgun_sequencing/data/)
-- [solution](../../../tree/shotgun_sequencing_solution/projects/DNA_shotgun_sequencing/solution) (with [full history](../../../commits/shotgun_sequencing_solution/projects/DNA_shotgun_sequencing/solution))
+- [solution](../../../tree/shotgun_final/projects/DNA_shotgun_sequencing/solution) (with [full history](../../../commits/shotgun_final/projects/DNA_shotgun_sequencing/solution))
  
 ## fMRI correlation analysis
-- [instructions](fMRI/assignment.md)
+- [instructions](fMRI/README.md)
 - [data](fMRI/data/)
-- [solution](../../../tree/fmri_solution/projects/fMRI/solution) (with [full history](../../../commits/fmri_solution/projects/fMRI/solution))
+- [solution](../../../tree/fmri_final/projects/fMRI/solution) (with [full history](../../../commits/fmri_final/projects/fMRI/solution))
 
 ## Modular robot arm control
-- [instructions](robot_arm/assignment.md)
+- [instructions](robot_arm/README.md)
 - [data](robot_arm/data/)
-- [solution](../../../tree/robot_solution/projects/robot_arm/solution) (with [full history](../../../commits/robot_solution/projects/robot_arm/solution))
+- [solution](../../../tree/robot_final/projects/robot_arm/solution) (with [full history](../../../commits/robot_final/projects/robot_arm/solution))
 
-
-# Keeping your code up to date
-
-We have written a short script to simplify the process of keeping your code up to date. Please refer to [this document for details](code_updater.md).
