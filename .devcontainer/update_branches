@@ -68,7 +68,7 @@ done < .devcontainer/branches
 
 git checkout $current_branch
 
-if [ $1 == "--push" ]; then
+if [ "x$1" == "x--push" ]; then
 
   for b in main ${!listed_branches[@]}; do
     [ $(git rev-parse $b) == $(git rev-parse --quiet $remote/$b 2>/dev/null) ] || git push --force $remote $b:$b 
