@@ -8,7 +8,7 @@
 #include "debug.h"
 #include "load_data.h"
 
-std::vector<std::vector<float>> load_patient_data (const std::string& filename)
+PatientDataList load_patient_data (const std::string& filename)
 {
   debug::log ("loading file \"" + filename + "\"...");
 
@@ -18,7 +18,7 @@ std::vector<std::vector<float>> load_patient_data (const std::string& filename)
 
   int n = 0;
   std::string line;
-  std::vector<std::vector<float>> data;
+  PatientDataList data;
   while (std::getline (infile, line)) {
     std::istringstream line_stream (line);
 
@@ -29,8 +29,8 @@ std::vector<std::vector<float>> load_patient_data (const std::string& filename)
     if (!line_stream)
       continue;
 
-    std::vector<float> pat_data;
-    float value;
+    std::vector<dtype> pat_data;
+    dtype value;
     while (line_stream >> value)
       pat_data.push_back (value);
 
