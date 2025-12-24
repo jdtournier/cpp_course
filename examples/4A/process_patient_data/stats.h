@@ -2,7 +2,13 @@
 
 #include <vector>
 
-inline float pow2 (float x) { return x*x; }
+#include "types.h"
 
-float compute_mean (const std::vector<float>& data);
-float compute_stddev (const std::vector<float>& data);
+inline dtype pow2 (dtype x) { return x*x; }
+
+// For the next two functions,  we return a double since dtype could be an
+// integer type, and this would invalidate the calculation of both mean and
+// std. dev.
+
+double compute_mean (const std::vector<dtype>& data);
+double compute_stddev (const std::vector<dtype>& data);

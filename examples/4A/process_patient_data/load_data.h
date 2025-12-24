@@ -3,4 +3,6 @@
 #include <string>
 #include <vector>
 
-std::vector<std::vector<float>> load_patient_data (const std::string& filename);
+#include "types.h"
+
+PatientDataList load_patient_data (const std::string& filename);
