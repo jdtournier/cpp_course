@@ -41,3 +41,6 @@
 # backup files
 *.swp
 *~
+
+build_log.txt
+
