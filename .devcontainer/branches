@@ -18,5 +18,5 @@ robot_final
 4A_student_with_getters 4A_student_with_setters 4A_student_with_init 4A_student_add_module_mark
 4A_babylonian_sqrt_with_struct
 4A_area_of_triangle_with_struct
-4A_enum_class_example
+4A_enum_example 4A_enum_class_example
 4A_weekday_with_enum

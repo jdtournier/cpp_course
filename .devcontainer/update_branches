@@ -13,14 +13,22 @@ list_local_branches() {
 
 
 rebase() {
-  tip=main
+  git checkout --quiet main
+  git checkout --quiet -B tip
+  root=root
 
-  echo -n "Rebasing onto $tip: "
+  git show-ref --quiet refs/heads/$root || { echo "root branch \"$root\" not found - aborting"; exit 1; }
+
+  git merge-base --is-ancestor tip $1 && { echo "branch \"$1\" already descends from \"main\" - skipping"; return; }
+
+  echo -n "Rebasing onto main: "
 
   while [ $# -gt 0 ]; do
     echo -n "$1 "
-    git merge-base --is-ancestor $tip $1 || { git checkout --quiet $1 && git rebase --quiet $tip; }
-    tip=$1
+    [ $(git rev-parse $root) != $(git rev-parse $1) ] && git cherry-pick --quiet $root..$1 >/dev/null
+    root=$(git rev-parse $1) 
+    tip=$(git rev-parse HEAD)
+    git branch -C $1
     shift
   done
 
@@ -47,32 +55,37 @@ done
 
 
 unlisted=""
-for b in $(list_local_branches); do 
+for b in $(list_local_branches); do
   [ -n "${listed_branches[$b]}" ] || unlisted+="$b "
 done
 [ -n "$unlisted" ] && { echo "Unlisted local branches:"; for b in $unlisted; do echo "  $b"; done; }
 
-set -e
+(
+  set -e
 
-echo "Checking out listed branches if not already checked out..."
-for b in ${!listed_branches[@]}; do
-  git show-ref --quiet refs/heads/$b && continue
-  echo "  $b"
-  git checkout --quiet --track $remote/$b
-done
-
-
-while read -r line; do 
-  [ "x$line" != "x" ] && rebase $line
-done < .devcontainer/branches
-
-git checkout $current_branch
-
-if [ "x$1" == "x--push" ]; then
-
-  for b in main ${!listed_branches[@]}; do
-    [ $(git rev-parse $b) == $(git rev-parse --quiet $remote/$b 2>/dev/null) ] || git push --force $remote $b:$b 
+  echo "Checking out listed branches if not already checked out..."
+  for b in ${!listed_branches[@]}; do
+    git show-ref --quiet refs/heads/$b && continue
+    echo "  $b"
+    git checkout --quiet --track $remote/$b
   done
 
-fi
+
+  while read -r line; do
+    [ "x$line" != "x" ] && rebase $line
+  done < .devcontainer/branches
+
+  if [ "x$1" == "x--push" ]; then
+
+    branches=""
+    for b in main ${!listed_branches[@]}; do
+      [ $(git rev-parse $b) == $(git rev-parse --quiet $remote/$b 2>/dev/null) ] || branches+="$b:$b " 
+    done
+    [ "x$branches" != "x" ] && git push --force $remote $branches
+
+  fi
+
+)
+
+git checkout $current_branch
 
