@@ -48,3 +48,16 @@ void print_list (List m)
     std::cout << "]\n";
 }
 
+
+int find_value (List m, int value)
+{
+    List t = m;
+    int count = 0;
+    while (t) {
+        if (t->val == value)
+            return count;
+        t = t->next;
+        count++;
+    }
+    return -1;
+}

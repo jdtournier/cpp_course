@@ -31,5 +31,8 @@ int main()
     delete_node (x, t);
     print_list (x);
 
+    // test new find_value() function
+    std::cout << "27 is at position " << find_value (x, 27) << "\n";
+
     return 0;
 }
