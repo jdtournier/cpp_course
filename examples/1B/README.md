@@ -12,10 +12,11 @@ Compile and run your code. What does it do?
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/reading_from_standard_input/main.cpp)*
 
+<br>
 
 ### Reading from standard input with prompt
 
-▶️ Modify your code to *prompt* the user to type in an integer, to avoid them wondering why your program appears to have stalled. You can do this by adding a statement like this one:
+Modify your code to *prompt* the user to type in an integer, to avoid them wondering why your program appears to have stalled. You can do this by adding a statement like this one:
 
 ```cpp
 std::cout << "Please enter an integer value: ";
@@ -26,31 +27,39 @@ Note that in the above, the prompt string does not end with a newline: this is d
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/reading_from_standard_input_with_prompt/main.cpp)*
 
+<br>
+
 
 ### Reading two floating-point values from standard input
 
-▶️ Modify your code to read two floating-point values, `x` & `y`, from the terminal, then print out their values and the result of their multiplication.  Make sure to *prompt* the user so they know they're expected to enter 2 numbers. Use a single use of `std::cin` to read both values. When reporting the values back to the user, make it clear which variable is which, and what computation was performed to get the final result. 
+Modify your code to read two floating-point values, `x` & `y`, from the terminal, then print out their values and the result of their multiplication.  Make sure to *prompt* the user so they know they're expected to enter 2 numbers. Use a single use of `std::cin` to read both values. When reporting the values back to the user, make it clear which variable is which, and what computation was performed to get the final result. 
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/reading_two_values_from_standard_input/main.cpp)*
+
+<br>
 
 
 ### Conditional operator 1
 
-▶️ Modify your program to prompt the user to enter a floating-point value, read it from `std::cin`, then report to the user whether the square of the value entered exceeds a threshold of 50
+Modify your program to prompt the user to enter a floating-point value, read it from `std::cin`, then report to the user whether the square of the value entered exceeds a threshold of 50
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/conditional_operator_1/main.cpp)*
+
+<br>
 
 
 ### Conditional operator 2
 
-▶️ Modify the program you wrote in the previous example to report an error to the user if the value they entered is less than or equal to zero, and if not perform the same check as above.
+Modify the program you wrote in the previous example to report an error to the user if the value they entered is less than or equal to zero, and if not perform the same check as above.
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/conditional_operator_2/main.cpp)*
+
+<br>
 
 
 ### BMI calculator
 
-▶️ BMI calculator: modify your code to prompt the user to enter two
+BMI calculator: modify your code to prompt the user to enter two
 floating-point values, corresponding to weight (in kg) and height (in m).
 Read these values from `std::cin`. Check that they fall within a reasonable
 range (20 → 300 for weight, 0.50 → 2.5 for height), and produce a warning if
@@ -64,11 +73,13 @@ which category the computed BMI falls into:
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/bmi_calculator/main.cpp)*
 
+<br>
+
 
 
 ### BMI calculator with check
 
-▶️ Modify the BMI computation code you produced above so that the initial
+Modify the BMI computation code you produced above so that the initial
 check for the values performs the following actions:
 - notify the user that their values are out of the expected range (ideally
   telling them exactly which one)
@@ -77,42 +88,50 @@ check for the values performs the following actions:
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/bmi_calculator_with_check/main.cpp)*
 
+<br>
+
 
 
 ### Weekday
 
-▶️ Write a C++ program to prompt the user for an integer corresponding to the
+Write a C++ program to prompt the user for an integer corresponding to the
 day of the week, with 1 → Monday, 2 → Tuesday, etc, then print out the
 *name* of the corresponding day of the week (i.e. 'monday', 'tuesday', etc.).
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/weekday/main.cpp)*
 
+<br>
+
 
 ### Factors of 462
 
-▶️ Write a C++ program to print out all factors of the number 462.
+Write a C++ program to print out all factors of the number 462.
 
 Remember that a *factor* is a number (greater than 1) that divides the number
 exactly, without leaving a remainder.
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/factors_of_462/main.cpp)*
 
+<br>
+
 
 
 ### Primes to 100
 
-▶️ Write a C++ program to print out all prime numbers up to 100
+Write a C++ program to print out all prime numbers up to 100
 
 Remember that a prime number is a number that cannot be factorised: it cannot
 be divided by any other integer (greater than 1) without leaving a remainder.
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/primes_to_100/main.cpp)*
 
+<br>
+
 
 
 ### Approximate π
 
-▶️ Write a C++ program to approximate the value of π using the infinite
+Write a C++ program to approximate the value of π using the infinite
 series:
 
 $$ \frac{\pi ^2}{6} = \sum_{n=1}^\infty \frac{1}{n^2} = 1 + \frac{1}{4} + \frac{1}{9} + \frac{1}{16} - \ldots $$
@@ -122,10 +141,12 @@ tolerance value of $10^{-15}$.
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/approximate_pi/main.cpp)*
 
+<br>
+
 
 ### Solve quadratic equation by iteration
 
-▶️ Write a C++ program to find the approximate solution to the equation:
+Write a C++ program to find the approximate solution to the equation:
 
 $$ x^2 - 7x + 1 = 0 $$
 
@@ -139,10 +160,12 @@ substituting the value you obtained back into the original quadratic.
 
 *[🔍 check your answer](../../../../blob/1B_answers/examples/1B/solve_quadratic_by_iteration/main.cpp)*
 
+<br>
+
 
 ### Primes to 100 with break
 
-▶️ Modify the code you wrote to print out all prime numbers up to 100, using
+Modify the code you wrote to print out all prime numbers up to 100, using
 the `break` statement to avoid needlessly checking all remaining factors if
 the number is already known not to be a prime.
 
