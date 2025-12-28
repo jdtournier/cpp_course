@@ -1,4 +1,4 @@
-# include <iostream>
+#include <iostream>
 
 int main ()
 {
@@ -10,7 +10,7 @@ int main ()
     std::cin >> miles ;
 
     // convert to km
-    km_in_miles = (5/8); // one km in units of miles
+    km_in_miles = (5.0/8.0); // one km in units of miles
     km = miles / km_in_miles;
 
     // display in km
