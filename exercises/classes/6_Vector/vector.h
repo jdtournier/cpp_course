@@ -1,8 +1,10 @@
 #pragma once
 
+#include <iostream>
+
 class Point {
     public:
-        Point (float x = 0.0, float y = 0.0) : m_x (x), m_y (y) { }
+        Point (float x, float y) : m_x (x), m_y (y) { }
         float get_x () const { return m_x; }
         float get_y () const { return m_y; }
     private:
@@ -13,7 +15,7 @@ class Point {
 
 class Vector {
     public:
-        Vector (Point s, Point e) :
+        Vector (Point s, Point e) : // constructor
             m_start (s), m_end (e) { }
 
         Point get_start() const { return m_start; }
@@ -27,3 +29,5 @@ class Vector {
     private:
         Point m_start, m_end;
 };
+
+
