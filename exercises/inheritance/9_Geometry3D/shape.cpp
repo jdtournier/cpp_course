@@ -1,4 +1,5 @@
 #include <cmath>
+
 #include "shape.h"
 
 void Circle::compute_area()
@@ -24,3 +25,14 @@ void Square::compute_perimeter()
 {
     m_perimeter = 4.0 * m_side;
 }
+
+void Sphere::compute_volume()
+{
+   m_volume = 4 * M_PI * m_radius * m_radius * m_radius / 3.0;
+}
+
+void Sphere::compute_surface_area()
+{
+   m_surface_area = 4 * M_PI * m_radius * m_radius;
+}
+
