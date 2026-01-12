@@ -32,3 +32,5 @@ class Student {
     std::vector<ModuleMark> m_marks;
 };
 
+std::ostream& operator<< (std::ostream& stream, const Student& s);
+
