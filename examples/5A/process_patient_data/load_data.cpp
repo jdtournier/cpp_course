@@ -35,11 +35,12 @@ PatientDataList load_patient_data (const std::string& filename)
     while (line_stream >> value)
       pat_data.push_back (value);
 
-    if (pat_data.empty())
-      throw std::runtime_error ("no data for patient \"" + patient_ID + "\"");
-
     PatientData patient;
     patient.init (patient_ID, pat_data);
+
+    if (!patient)
+      throw std::runtime_error ("no data for patient \"" + patient_ID + "\"");
+
     data.push_back (patient);
   }
 
