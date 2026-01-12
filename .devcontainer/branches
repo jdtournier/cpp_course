@@ -21,6 +21,8 @@ robot_final
 4A_area_of_triangle_with_struct
 4A_enum_example 4A_enum_class_example
 4A_weekday_with_enum
+5A_negation_operator 5A_subscript_operator
+5A_student_insertion_operator 5A_student_friend_insertion_operator
 solutions_basics
 solutions_control
 solutions_functions
