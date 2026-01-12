@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <format>
 #include <termviz.h>
 
 #include "debug.h"
@@ -18,13 +19,15 @@ int main (int argc, char* argv[])
       throw std::out_of_range ("expected at least one argument for filename of input file");
 
     auto list = load_patient_data (argv[1]);
+    if (!list)
+      throw std::runtime_error (std::format ("input file \"{}\" contains no data!", argv[1]));
 
-    for (const auto& pat : list)
-      std::cout << pat.ID() << ": " << pat.get_mean() << " ± " << pat.get_stddev() << "\n";
+    for (int n = 0; n < list.size(); n++)
+      std::cout << list[n].ID() << ": " << list[n].get_mean() << " ± " << list[n].get_stddev() << "\n";
 
     auto fig = termviz::figure();
-    for (const auto& p : list)
-        fig.plot (p.data());
+    for (int n = 0; n < list.size(); n++)
+      fig.plot (list[n].data());
 
     // end of main processing block
   }

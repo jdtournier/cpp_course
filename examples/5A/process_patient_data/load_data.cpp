@@ -8,6 +8,7 @@
 #include "debug.h"
 #include "load_data.h"
 #include "patient.h"
+#include "patient_list.h"
 
 PatientDataList load_patient_data (const std::string& filename)
 {
@@ -19,7 +20,7 @@ PatientDataList load_patient_data (const std::string& filename)
 
   int n = 0;
   std::string line;
-  PatientDataList data;
+  std::vector<PatientData> data;
   while (std::getline (infile, line)) {
     std::istringstream line_stream (line);
 
@@ -49,5 +50,5 @@ PatientDataList load_patient_data (const std::string& filename)
 
   debug::log ("found " + std::to_string(data.size()) + " patients in file \"" + filename + "\"");
 
-  return data;
+  return { data };
 }
