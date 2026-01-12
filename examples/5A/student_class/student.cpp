@@ -26,5 +26,9 @@ std::ostream& operator<< (std::ostream& stream, const Student& s)
   stream << "student: \"" << s.get_name() << "\", DOB: "
       << s.get_DOB()[0] << "/" << s.get_DOB()[1] << "/" << s.get_DOB()[2]
       << ", ID: " << s.get_ID() << ", GPA = " << s.get_GPA();
+  stream << "\n  Module marks:\n";
+  for (const auto& m : s.m_marks)
+    stream << "    " << m.description << ": " << m.mark << " (weighting: " << m.weighting << ")\n";
+
   return stream;
 }

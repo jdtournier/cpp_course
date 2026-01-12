@@ -24,6 +24,8 @@ class Student {
 
     void add_module_mark (const std::string& module_description, float mark, float weighting);
 
+    friend std::ostream& operator<< (std::ostream& stream, const Student& s);
+
   private:
     int m_ID = 0;
     std::string m_name;
@@ -32,5 +34,4 @@ class Student {
     std::vector<ModuleMark> m_marks;
 };
 
-std::ostream& operator<< (std::ostream& stream, const Student& s);
 
