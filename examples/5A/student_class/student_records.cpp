@@ -13,9 +13,7 @@ int main ()
   s.add_module_mark ("intro to programming", 2.9, 1.0);
   s.add_module_mark ("signal processing", 3.7, 2.0);
 
-  std::cout << "student: \"" << s.get_name() << "\", DOB: "
-      << s.get_DOB()[0] << "/" << s.get_DOB()[1] << "/" << s.get_DOB()[2]
-      << ", ID: " << s.get_ID() << ", GPA = " << s.get_GPA() << "\n";
+  std::cout << s << "\n";
 
   return 0;
 }
