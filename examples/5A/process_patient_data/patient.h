@@ -26,5 +26,3 @@ class PatientData {
     std::vector<dtype> m_data;
 };
 
-using PatientDataList = std::vector<PatientData>;
-
