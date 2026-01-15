@@ -18,6 +18,8 @@ class Vector3D {
       return m_data[0] == 0.0 && m_data[1] == 0.0 && m_data[2] == 0.0;
     }
 
+    bool operator== (const Vector3D&) const = default;
+
   private:
     std::array<double,3> m_data;
 };
