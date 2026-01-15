@@ -9,6 +9,7 @@ int main ()
   v[0] = 1.0;
   std::cout << "v: " << v << "\n";
   std::cout << "!v: " << !v << "\n";
+  std::cout << "v==v2: " << (v==v2) << "\n";
 
   return 0;
 }
