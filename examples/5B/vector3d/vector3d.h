@@ -26,6 +26,14 @@ class Vector3D {
 
 
 
+inline bool operator== (const Vector3D& V, double value)
+{
+  return (V[0]==value) && (V[1]==value) && (V[2]==value);
+}
+inline bool operator== (double value, const Vector3D& V)
+{
+  return V==value;
+}
 
 inline std::ostream& operator<< (std::ostream& stream, const Vector3D& v)
 {
