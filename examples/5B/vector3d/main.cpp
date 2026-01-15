@@ -1,0 +1,14 @@
+#include <iostream>
+
+#include "vector3d.h"
+
+int main ()
+{
+  Vector3D v, v2 ({1,2,3});
+
+  v[0] = 1.0;
+  std::cout << "v: " << v << "\n";
+  std::cout << "!v: " << !v << "\n";
+
+  return 0;
+}
