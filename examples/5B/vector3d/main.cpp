@@ -26,5 +26,8 @@ int main ()
   std::cout << "3>v2: " << (3>v2) << "\n";
   std::cout << "3>=v2: " << (3>=v2) << "\n";
 
+  std::cout << "v+v2: " << (v+v2) << "\n";
+  std::cout << "v-v2: " << (v-v2) << "\n";
+
   return 0;
 }
