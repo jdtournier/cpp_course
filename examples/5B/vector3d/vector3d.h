@@ -76,6 +76,12 @@ inline bool operator>= (double a, const Vector3D& b)
 { return a>=b[0] && a>=b[1] && a>=b[2]; }
 
 
+// Arithmetic operators (between Vector3D objects):
+inline Vector3D operator+(const Vector3D& a, const Vector3D& b)
+{ return Vector3D ({ a[0]+b[0], a[1]+b[1], a[2]+b[2] }); }
+
+inline Vector3D operator-(const Vector3D& a, const Vector3D& b)
+{ return Vector3D ({ a[0]-b[0], a[1]-b[1], a[2]-b[2] }); }
 
 // stream insertion operator:
 inline std::ostream& operator<< (std::ostream& stream, const Vector3D& v)
