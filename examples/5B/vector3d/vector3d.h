@@ -83,6 +83,33 @@ inline Vector3D operator+(const Vector3D& a, const Vector3D& b)
 inline Vector3D operator-(const Vector3D& a, const Vector3D& b)
 { return Vector3D ({ a[0]-b[0], a[1]-b[1], a[2]-b[2] }); }
 
+
+// Arithmetic operators (between Vector3D and double):
+inline Vector3D operator+(const Vector3D& a, double b)
+{ return Vector3D ({ a[0]+b, a[1]+b, a[2]+b }); }
+
+inline Vector3D operator-(const Vector3D& a, double b)
+{ return Vector3D ({ a[0]-b, a[1]-b, a[2]-b }); }
+
+inline Vector3D operator*(const Vector3D& a, double b)
+{ return Vector3D ({ a[0]*b, a[1]*b, a[2]*b }); }
+
+inline Vector3D operator/(const Vector3D& a, double b)
+{ return Vector3D ({ a[0]/b, a[1]/b, a[2]/b }); }
+
+inline Vector3D operator+(double a, const Vector3D& b)
+{ return Vector3D ({ a+b[0], a+b[1], a+b[2] }); }
+
+inline Vector3D operator-(double a, const Vector3D& b)
+{ return Vector3D ({ a-b[0], a-b[1], a-b[2] }); }
+
+inline Vector3D operator*(double a, const Vector3D& b)
+{ return Vector3D ({ a*b[0], a*b[1], a*b[2] }); }
+
+inline Vector3D operator/(double a, const Vector3D& b)
+{ return Vector3D ({ a/b[0], a/b[1], a/b[2] }); }
+
+
 // stream insertion operator:
 inline std::ostream& operator<< (std::ostream& stream, const Vector3D& v)
 {

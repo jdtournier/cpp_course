@@ -29,5 +29,15 @@ int main ()
   std::cout << "v+v2: " << (v+v2) << "\n";
   std::cout << "v-v2: " << (v-v2) << "\n";
 
+  std::cout << "v2+1: " << (v2+1) << "\n";
+  std::cout << "v2-2: " << (v2-2) << "\n";
+  std::cout << "v2*3: " << (v2*3) << "\n";
+  std::cout << "v2/2: " << (v2/2) << "\n";
+
+  std::cout << "1+v2: " << (1+v2) << "\n";
+  std::cout << "2-v2: " << (2-v2) << "\n";
+  std::cout << "3*v2: " << (3*v2) << "\n";
+  std::cout << "2/v2: " << (2/v2) << "\n";
+
   return 0;
 }
