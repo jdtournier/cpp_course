@@ -26,6 +26,7 @@ class Vector3D {
 
 
 
+// equality operators:
 inline bool operator== (const Vector3D& V, double value)
 {
   return (V[0]==value) && (V[1]==value) && (V[2]==value);
@@ -35,6 +36,48 @@ inline bool operator== (double value, const Vector3D& V)
   return V==value;
 }
 
+// comparison operators: Vector3D - Vector3D
+inline bool operator< (const Vector3D& a, const Vector3D& b)
+{ return a[0]<b[0] && a[1]<b[1] && a[2]<b[2]; }
+
+inline bool operator<= (const Vector3D& a, const Vector3D& b)
+{ return a[0]<=b[0] && a[1]<=b[1] && a[2]<=b[2]; }
+
+inline bool operator> (const Vector3D& a, const Vector3D& b)
+{ return a[0]>b[0] && a[1]>b[1] && a[2]>b[2]; }
+
+inline bool operator>= (const Vector3D& a, const Vector3D& b)
+{ return a[0]>=b[0] && a[1]>=b[1] && a[2]>=b[2]; }
+
+// comparison operators: Vector3D - double
+inline bool operator< (const Vector3D& a, double b)
+{ return a[0]<b && a[1]<b && a[2]<b; }
+
+inline bool operator<= (const Vector3D& a, const double b)
+{ return a[0]<=b && a[1]<=b && a[2]<=b; }
+
+inline bool operator> (const Vector3D& a, const double b)
+{ return a[0]>b && a[1]>b && a[2]>b; }
+
+inline bool operator>= (const Vector3D& a, const double b)
+{ return a[0]>=b && a[1]>=b && a[2]>=b; }
+
+// comparison operators: double - Vector3D
+inline bool operator< (double a, const Vector3D& b)
+{ return a<b[0] && a<b[1] && a<b[2]; }
+
+inline bool operator<= (double a, const Vector3D& b)
+{ return a<=b[0] && a<=b[1] && a<=b[2]; }
+
+inline bool operator> (double a, const Vector3D& b)
+{ return a>b[0] && a>b[1] && a>b[2]; }
+
+inline bool operator>= (double a, const Vector3D& b)
+{ return a>=b[0] && a>=b[1] && a>=b[2]; }
+
+
+
+// stream insertion operator:
 inline std::ostream& operator<< (std::ostream& stream, const Vector3D& v)
 {
   stream << "[ " << v[0] << " " << v[1] << " " << v[2] << " ]";

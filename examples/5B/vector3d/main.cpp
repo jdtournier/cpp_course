@@ -19,5 +19,12 @@ int main ()
   std::cout << "v!=1: " << (v!=1.0) << "\n";
   std::cout << "2!=v2: " << (2!=v2) << "\n";
 
+  std::cout << "v<v2: " << (v<v2) << "\n";
+  std::cout << "v<=v2: " << (v<=v2) << "\n";
+  std::cout << "v<1: " << (v<1) << "\n";
+  std::cout << "v<=1: " << (v<=1) << "\n";
+  std::cout << "3>v2: " << (3>v2) << "\n";
+  std::cout << "3>=v2: " << (3>=v2) << "\n";
+
   return 0;
 }
