@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <ostream>
 
 class Image {
   public:
@@ -19,3 +20,12 @@ class Image {
     std::vector<int> m_data;
     int m_width = 0, m_height = 0;
 };
+
+
+
+inline std::ostream& operator<< (std::ostream& stream, const Image& im)
+{
+  stream << im.width() << " x " << im.height();
+  return stream;
+}
+
