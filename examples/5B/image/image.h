@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <ostream>
+#include <stdexcept>
 
 class Image {
   public:
@@ -44,4 +45,55 @@ inline std::ostream& operator<< (std::ostream& stream, const Image& im)
   stream << im.width() << " x " << im.height();
   return stream;
 }
+
+
+// helper function: throw an exception is sizes of a & b don't match:
+inline void check_sizes_match (const Image& a, const Image& b) {
+  if (a.width() != b.width() || a.height() != b.height())
+    throw std::runtime_error ("size of images do not match");
+}
+
+
+// relational operators:
+inline bool operator< (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) < b(i,j) ))
+        return false;
+  return true;
+}
+
+inline bool operator<= (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) <= b(i,j) ))
+        return false;
+  return true;
+}
+
+inline bool operator> (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) > b(i,j) ))
+        return false;
+  return true;
+}
+
+inline bool operator>= (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) >= b(i,j) ))
+        return false;
+  return true;
+}
+
+
 
