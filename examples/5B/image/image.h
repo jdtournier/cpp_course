@@ -142,3 +142,44 @@ inline bool operator> (int a, const Image& b) { return b<a; }
 inline bool operator>= (int a, const Image& b) { return b<=a; }
 
 
+// arithmetic operators: Image <=> Image
+inline Image operator+ (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  Image c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) + b(i,j);
+  return c;
+}
+
+inline Image operator- (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  Image c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) - b(i,j);
+  return c;
+}
+
+inline Image operator* (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  Image c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) * b(i,j);
+  return c;
+}
+
+inline Image operator/ (const Image& a, const Image& b)
+{
+  check_sizes_match (a, b);
+  Image c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) / b(i,j);
+  return c;
+}
+
