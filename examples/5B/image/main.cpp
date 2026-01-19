@@ -31,6 +31,11 @@ int main ()
   std::cout << "a>b: " << (a>b) << "\n";
   std::cout << "a>=b: " << (a>=b) << "\n";
 
+  std::cout << "c<1:" << (c<1) << "\n";
+  std::cout << "c<=1: " << (c<=1) << "\n";
+  std::cout << "1>c: " << (1>c) << "\n";
+  std::cout << "1>=c: " << (1>=c) << "\n";
+
 
   return 0;
 }
