@@ -23,5 +23,9 @@ int main ()
   std::cout << "b == c: " << (b==c) << "\n";
   std::cout << "b != c: " << (b!=c) << "\n";
 
+  a.resize (10,10);
+  std::cout << "Image a: " << a << "\n";
+
+
   return 0;
 }
