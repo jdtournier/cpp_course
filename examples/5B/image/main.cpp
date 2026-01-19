@@ -35,5 +35,12 @@ int main ()
   display (a/(b+1), "a/(b+1)", 0, 16);
   display (a+256-2*b, "a+256-2*b", 0, 256);
 
+  display (a, "a starts as", 0, 256);
+  display (a+=128, "a+=128", 0, 256);
+  display (a, "a is now", 0, 256);
+
+  display (a/=(b+1), "a/=(b+1)", 0, 16);
+  display (a+=256-2*b, "a+=256-2*b", 128, 300);
+
   return 0;
 }
