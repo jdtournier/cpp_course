@@ -97,3 +97,48 @@ inline bool operator>= (const Image& a, const Image& b)
 
 
 
+
+// relational operators: Image <=> int
+inline bool operator< (const Image& a, int b)
+{
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) < b ))
+        return false;
+  return true;
+}
+
+inline bool operator<= (const Image& a, int b)
+{
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) <= b ))
+        return false;
+  return true;
+}
+
+inline bool operator> (const Image& a, int b)
+{
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) > b ))
+        return false;
+  return true;
+}
+
+inline bool operator>= (const Image& a, int b)
+{
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      if (!( a(i,j) >= b ))
+        return false;
+  return true;
+}
+
+// relational operators: int <=> Image
+inline bool operator< (int a, const Image& b) { return b>a; }
+inline bool operator<= (int a, const Image& b) { return b>=a; }
+inline bool operator> (int a, const Image& b) { return b<a; }
+inline bool operator>= (int a, const Image& b) { return b<=a; }
+
+
