@@ -33,6 +33,72 @@ class Image {
     int& operator() (int i, int j) { return m_data[i+m_width*j]; }
     const int& operator() (int i, int j) const { return m_data[i+m_width*j]; }
 
+    void check_sizes_match (const Image& other) const {
+      if (width() != other.width() || height() != other.height())
+        throw std::runtime_error ("size of images do not match");
+    }
+
+    // Compound arithmetic operators:
+    Image& operator+= (const Image& b) {
+      check_sizes_match (b);
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) += b(i,j);
+      return *this;
+    }
+
+    Image& operator-= (const Image& b) {
+      check_sizes_match (b);
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) -= b(i,j);
+      return *this;
+    }
+
+    Image& operator*= (const Image& b) {
+      check_sizes_match (b);
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) *= b(i,j);
+      return *this;
+    }
+
+    Image& operator/= (const Image& b) {
+      check_sizes_match (b);
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) /= b(i,j);
+      return *this;
+    }
+
+    Image& operator+= (int b) {
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) += b;
+      return *this;
+    }
+
+    Image& operator-= (int b) {
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) -= b;
+      return *this;
+    }
+
+    Image& operator*= (int b) {
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) *= b;
+      return *this;
+    }
+
+    Image& operator/= (int b) {
+      for (int j = 0; j < height(); j++)
+        for (int i = 0; i < width(); i++)
+          (*this)(i,j) /= b;
+      return *this;
+    }
+
   private:
     std::vector<int> m_data;
     int m_width = 0, m_height = 0;
@@ -49,8 +115,7 @@ inline std::ostream& operator<< (std::ostream& stream, const Image& im)
 
 // helper function: throw an exception is sizes of a & b don't match:
 inline void check_sizes_match (const Image& a, const Image& b) {
-  if (a.width() != b.width() || a.height() != b.height())
-    throw std::runtime_error ("size of images do not match");
+  a.check_sizes_match (b);
 }
 
 
