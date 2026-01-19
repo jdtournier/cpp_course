@@ -26,6 +26,11 @@ int main ()
   a.resize (10,10);
   std::cout << "Image a: " << a << "\n";
 
+  std::cout << "a<b: " << (a<b) << "\n";
+  std::cout << "a<=b: " << (a<=b) << "\n";
+  std::cout << "a>b: " << (a>b) << "\n";
+  std::cout << "a>=b: " << (a>=b) << "\n";
+
 
   return 0;
 }
