@@ -1,15 +1,30 @@
 #pragma once
 
 #include <vector>
+#include <cmath>
 
-#include "types.h"
 
-inline dtype pow2 (dtype x) { return x*x; }
+template <typename T> inline T pow2 (T x) { return x*x; }
 
-// For the next two functions,  we return a double since dtype could be an
+// For the next two functions,  we return a double since T could be an
 // integer type, and this would invalidate the calculation of both mean and
 // std. dev.
 
-double compute_mean (const std::vector<dtype>& data);
-double compute_stddev (const std::vector<dtype>& data);
+template <typename T> double compute_mean (const std::vector<T>& data)
+{
+  double sum = 0.0;
+  for (const auto& value : data)
+    sum += value;
+  return sum / data.size();
+}
 
+
+
+template <typename T> double compute_stddev (const std::vector<T>& data)
+{
+  const auto mean = compute_mean (data);
+  double sum_diff = 0.0;
+  for (const auto& value : data)
+    sum_diff += pow2 (value-mean);
+  return std::sqrt(sum_diff / (data.size()-1));
+}
