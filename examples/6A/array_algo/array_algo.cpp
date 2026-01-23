@@ -2,6 +2,7 @@
 
 #include "matrix.h"
 #include "image.h"
+#include "algo.h"
 
 int main ()
 {
@@ -17,6 +18,9 @@ int main ()
       P(i,j) = i+P.size(1)-j;
 
   std::cout << "image =\n" << P << "\n";
+
+  std::cout << "mean of M = " << get_mean (M) << "\n";
+  std::cout << "mean of P = " << get_mean (P) << "\n";
 
   return 0;
 }
