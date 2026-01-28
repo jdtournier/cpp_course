@@ -3,11 +3,17 @@
 #include <array>
 #include <ostream>
 #include <format>
+#include <stdexcept>
 
 class Matrix3x3 {
   public:
     Matrix3x3 () = default;  // <- default constructor
     Matrix3x3 (const Matrix3x3&) = default;   // <- copy constructor
+    // required for the transpose() template function:
+    Matrix3x3 (int width, int height) {
+      if (width != 3 || height != 3)
+        throw std::runtime_error ("Matrix3x3 class can only be 3x3");
+    }
 
     // construct by providing the data for the 3 rows of the matrix:
     Matrix3x3 (const std::array<float,3>& row1,

@@ -22,5 +22,8 @@ int main ()
   std::cout << "mean of M = " << get_mean (M) << "\n";
   std::cout << "mean of P = " << get_mean (P) << "\n";
 
+  std::cout << "transpose of M:\n" << transpose (M) << "\n";
+  std::cout << "transpose of P:\n" << transpose (P) << "\n";
+
   return 0;
 }
