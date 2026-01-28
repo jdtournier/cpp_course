@@ -1,8 +1,13 @@
 #include <iostream>
+#include <cmath>
 
 #include "matrix.h"
 #include "image.h"
 #include "algo.h"
+
+
+inline float func (float x) { return std::exp(2.0*x-1); }
+
 
 int main ()
 {
@@ -21,6 +26,12 @@ int main ()
 
   std::cout << "mean of M = " << get_mean (M) << "\n";
   std::cout << "mean of P = " << get_mean (P) << "\n";
+
+  std::cout << "transpose of M:\n" << transpose (M) << "\n";
+  std::cout << "transpose of P:\n" << transpose (P) << "\n";
+
+  for_each (M, func);
+  std::cout << "M = \n" << M << "\n";
 
   return 0;
 }
