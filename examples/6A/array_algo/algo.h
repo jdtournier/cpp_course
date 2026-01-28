@@ -18,3 +18,11 @@ template <typename ArrayType> ArrayType transpose (const ArrayType& A)
   return B;
 }
 
+template <typename ArrayType, typename OpType>
+void for_each (ArrayType& A, const OpType& op)
+{
+  for (int j = 0; j < A.size(1); ++j)
+    for (int i = 0; i < A.size(0); ++i)
+      A(j,i) = op (A(i,j));
+}
+
