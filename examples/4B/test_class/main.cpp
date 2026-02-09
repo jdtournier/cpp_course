@@ -15,6 +15,10 @@ class TestClass {
       std::cout << "TestClass copy-constructed with values " << m_value << ", '" << m_label << "'\n";
     }
 
+    ~TestClass() {
+      std::cout << "TestClass destroyed, held values " << m_value << ", '" << m_label << "'\n";
+    }
+
 
   private:
     int m_value;
