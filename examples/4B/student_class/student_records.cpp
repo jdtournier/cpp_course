@@ -4,7 +4,7 @@
 
 int main ()
 {
-  Student s ("Jane Doe", { 3, 6, 2001 }, 2349423);
+  Student s ("Jane Doe", { 3, 6, 2001 }, 2349423, { "matlab", 3.1, 1.0 });
 
   s.add_module_mark ("mathematics", 3.2, 1.0);
   s.add_module_mark ("physics", 3.5, 2.0);

@@ -14,6 +14,11 @@ class Student {
     Student (const std::string& name, const std::array<int,3>& dob, int ID) :
       m_ID (ID), m_name (name), m_GPA (0.0), m_dob (dob) { }
 
+    Student (const std::string& name, const std::array<int,3>& dob, int ID, const ModuleMark& module_mark) :
+      Student (name, dob, ID) {
+        m_marks.push_back (module_mark);
+      }
+
     int get_ID () const { return m_ID; }
     const std::string& get_name () const { return m_name; }
     float get_GPA () const { return m_GPA; }
