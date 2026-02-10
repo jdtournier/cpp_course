@@ -19,6 +19,13 @@ class TestClass {
       std::cout << "TestClass destroyed, held values " << m_value << ", '" << m_label << "'\n";
     }
 
+    TestClass& operator= (const TestClass& other) {
+      m_value = other.m_value;
+      m_label = other.m_label;
+      std::cout << "TestClass copied with values " << m_value << ", '" << m_label << "'\n";
+      return *this;
+    }
+
 
   private:
     int m_value;
@@ -33,6 +40,8 @@ int main ()
   TestClass b (3, "testing");
 
   TestClass c = b;
+
+  c = a;
 
   return 0;
 }
