@@ -1,6 +1,7 @@
 #include <iostream>
 #include <format>
 
+#include "progress.h"
 
 double fraction_in_circle (int grid_size)
 {
@@ -10,10 +11,14 @@ double fraction_in_circle (int grid_size)
   // the increment between samples:
   const double step = 1.0/grid_size;
 
-  for (double y = 0.0; y < 1.0; y += step)
+  ProgressBar progress ("sampling unit circle", grid_size);
+
+  for (double y = 0.0; y < 1.0; y += step) {
     for (double x = 0.0; x < 1.0; x += step)
       if (x*x + y*y < 1.0)
         n_in_circle++;
+    progress.inc();
+  }
 
   // convert to double to ensure subsequent calculation works as expected:
   const double size = grid_size;
