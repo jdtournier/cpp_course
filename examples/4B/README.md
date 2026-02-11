@@ -1,6 +1,6 @@
 ### Adding a default constructor
 
-▶️ In a previous exercise, we had set up a simple class to hold student records. Add a default constructor to this class.
+In a previous exercise, we had set up a simple class to hold student records. Add a default constructor to this class.
 
 **[Click here to access the initial project files](../../../../tree/main/examples/4B/student_class)**
 
@@ -11,7 +11,7 @@
 
 ### Adding a parameterised constructor
 
-▶️ Add a parameterised constructor to your `Student` class, allowing the name, date of birth, and ID to be specified. The GPA should be initialised to zero.
+Add a parameterised constructor to your `Student` class, allowing the name, date of birth, and ID to be specified. The GPA should be initialised to zero.
 
 *[🔍 check your answer](../../../../tree/4B_student_parameterised_constructor/examples/4B/student_class) (or check the [diff](../../../../commit/4B_student_parameterised_constructor))*
 
@@ -20,7 +20,7 @@
 
 ### Overloading the constructor
 
-▶️ Add an additional parameterised constructor to your `Student` class, which should allow the same attributes to be set as the existing one, but additionally allows the marks for the first module to be provided. These marks will be used to fill in the first entry in the module marks vector.
+Add an additional parameterised constructor to your `Student` class, which should allow the same attributes to be set as the existing one, but additionally allows the marks for the first module to be provided. These marks will be used to fill in the first entry in the module marks vector.
 
 *[🔍 check your answer](../../../../tree/4B_student_parameterised_constructor2/examples/4B/student_class) (or check the [diff](../../../../commit/4B_student_parameterised_constructor2))*
 
@@ -29,7 +29,7 @@
 
 ### Adding constructor with default arguments
 
-▶️ The university also needs to keep track of their student's visa status, which can be one of: home, international, or visitor. Add an attribute to represent the student's visa status to your `Student` class, and provide a method to access this information. Modify your parameterised constructors to accept an additional argument to specify the student's visa status, which should default to 'home'. 
+The university also needs to keep track of their student's visa status, which can be one of: home, international, or visitor. Add an attribute to represent the student's visa status to your `Student` class, and provide a method to access this information. Modify your parameterised constructors to accept an additional argument to specify the student's visa status, which should default to 'home'. 
 
 *[🔍 check your answer](../../../../tree/4B_student_constructor_with_default_argument/examples/4B/student_class) (or check the [diff](../../../../commit/4B_student_constructor_with_default_argument))*
 
@@ -38,7 +38,7 @@
 
 ### Adding constructors
 
-▶️ Create a new program, and declare a new class called `TestClass`. Your class should have two attributes: an `int` called `m_value` and a `std::string` called `m_label`. Add the following to your class:
+Create a new program, and declare a new class called `TestClass`. Your class should have two attributes: an `int` called `m_value` and a `std::string` called `m_label`. Add the following to your class:
 - a default constructor to initialised these values, and additionally print to terminal that the object has been created (along with the values it was initialised with);
 - a parameterised constructor to allow the user to provide these values, which will also print to terminal that the object has been created and the values it was set to;
 - a copy constructor, which will also print to terminal that the object has been copied, and the values that it is now set to;
@@ -52,7 +52,7 @@ In your program's `main()` function, add statements to create objects of your cl
 
 ### Adding a destructor
 
-▶️ Modify your earlier `TestClass` example by adding a destructor, which will also print to terminal that the object is being destroyed, and the values that it had been set to.
+Modify your earlier `TestClass` example by adding a destructor, which will also print to terminal that the object is being destroyed, and the values that it had been set to.
 
 *[🔍 check your answer](../../../../blob/4B_test_class_destructor/examples/4B/test_class/main.cpp) (or check the [diff](../../../../commit/4B_test_class_destructor))*
 
@@ -61,9 +61,9 @@ In your program's `main()` function, add statements to create objects of your cl
 
 ### Finalising actions in the class destructor: adding a progress meter to long-running processes
 
-▶️ One way to compute the value of *π* is to sample a square, and count how many samples fall within the circle as a proportion of the total number of samples. This provides an estimate of the ratio of the area of the unit circle (*π*) relative to the area of the square (4), allowing us to obtain an estimate of π as 4×(fraction in circle).
+One way to compute the value of *π* is to sample a square, and count how many samples fall within the circle as a proportion of the total number of samples. This provides an estimate of the ratio of the area of the unit circle (*π*) relative to the area of the square (4), allowing us to obtain an estimate of π as 4×(fraction in circle).
 
-![unit circle in a square](assets/circle_in_square.png)
+![unit circle in a square](circle_in_square.png)
 
 A program has been written to estimate the value of π using this procedure. It contains a function that iterates over a grid on the unit square, and computes the number of (x,y) samples that fall within the circle (x²+y²<1). The function takes a single argument, corresponding to the number of grid samples along each axis (so a value a 1000 means there will be a total of 1000×1000 samples), and returns a floating-point value corresponding to the estimated fraction. 
 
@@ -92,7 +92,7 @@ Use your new `ProgressBar` class in the `fraction_in_circle()` function, constru
 
 ### Adding a copy assignment operator
 
-▶️ Modify your earlier `TestClass` example by adding a copy assignment operator, which will also print to terminal that the object is being copied, reporting the values that it has now been set to.
+Modify your earlier `TestClass` example by adding a copy assignment operator, which will also print to terminal that the object is being copied, reporting the values that it has now been set to.
 
 *[🔍 check your answer](../../../../blob/4B_test_class_copy_assignment/examples/4B/test_class/main.cpp) (or check the [diff](../../../../commit/4B_test_class_copy_assignment))*
 
@@ -101,7 +101,7 @@ Use your new `ProgressBar` class in the `fraction_in_circle()` function, constru
 
 ### Defining special functions outside class declaration
 
-▶️ Modify your earlier Student class to define all constructors in the `student.cpp` file. 
+Modify your earlier Student class to define all constructors in the `student.cpp` file. 
 
 *[🔍 check your answer](../../../../tree/4B_student_separate_definition/examples/4B/student_class/) (or check the [diff](../../../../commit/4B_student_separate_definition))*
 
@@ -111,7 +111,7 @@ Use your new `ProgressBar` class in the `fraction_in_circle()` function, constru
 
 ### Using the this pointer to design fluent interface: the Lorenz attractor
 
-▶️ The [Lorenz attractor](https://en.wikipedia.org/wiki/Lorenz_system) is a well-known system of 3 ordinary differential equations that exhibit chaotic behaviour. The path of a 3D point is driven by the following equations:
+The [Lorenz attractor](https://en.wikipedia.org/wiki/Lorenz_system) is a well-known system of 3 ordinary differential equations that exhibit chaotic behaviour. The path of a 3D point is driven by the following equations:
 
 $$ \frac{dx}{dt} = \sigma (y-x) $$
 $$ \frac{dy}{dt} = x (\rho-z)-y $$
@@ -135,7 +135,7 @@ Your methods (other than the final simulate method) should return a reference to
 
 Make use of your class in your `main()` function, and plot the positions as a 2D plot as a projection in the x-z plane using the terminal graphics library. Your plot should look like this:
 
-![Lorenz attractor](assets/lorenz_attractor.png)
+![Lorenz attractor](lorenz_attractor.png)
 
 *[🔍 check your answer](../../../../blob/4B_lorenz_attractor/examples/4B/lorenz_attractor/main.cpp)*
 
@@ -144,7 +144,7 @@ Make use of your class in your `main()` function, and plot the positions as a 2D
 
 ## OOP design: patient database report generation
 
-▶️ We need to design a program to read patient data from a local database, select patients based on user-specified criteria, and produce a PDF report suitable for viewing. 
+We need to design a program to read patient data from a local database, select patients based on user-specified criteria, and produce a PDF report suitable for viewing. 
 
 When designing the program, there are additional issues to consider:
 - Due to strategic decisions outside our control, we may need to switch to a different types of databases in future.
@@ -160,11 +160,11 @@ Suggest a suitable OOP design that would be appropriate for this program.
 
 ### OOP design: EEG processing and display system
 
-▶️ We need to design software to process and display electroencephalogram (EEG) data. EEG data consist of 21 simultaneous recordings of the electrical activity measured using electrodes placed at standard layout on the scalp, with a sampling rate of 250 Hz. However, the number of electrodes can go up to 256 on high-density EEG systems, and the sampling rate go also be higher on high-end systems. 
+We need to design software to process and display electroencephalogram (EEG) data. EEG data consist of 21 simultaneous recordings of the electrical activity measured using electrodes placed at standard layout on the scalp, with a sampling rate of 250 Hz. However, the number of electrodes can go up to 256 on high-density EEG systems, and the sampling rate go also be higher on high-end systems. 
 
 Electrical activity is typically displayed as a *montage*, consisting of a standard arrangement of electrode pairs, which involves showing the potential difference between known pairs of electrodes. This is illustrated in the figure below. 
 
-![EEG montage](assets/eeg_montage.png)
+![EEG montage](eeg_montage.png)<br>
 [*Image from Westover et al., Neurocritical Care 33: 479–490 (2020)*](https://doi.org/10.1007/s12028-019-00911-4)
 
 There are many different types of these montages in common use, and our system needs to be able to handle any such scheme, which means computing the expected signal differences and displaying them accordingly. 

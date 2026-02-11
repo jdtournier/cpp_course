@@ -50,7 +50,7 @@ Write a `main()` function declaring a 5x4 C-style array, initialise each element
 
 ### Vector example
 
-▶️ Write a `main()` function that declares a `std::vector` of `int`, prompts the user to enter a series of integers on the   terminal (with the value zero to stop), reads in these values using `std::cin`, and *appends* them to your vector using the   `push_back()` method until the value 0 is encountered. Your program should then report the number of elements in the vector,  their sum, and their product.
+Write a `main()` function that declares a `std::vector` of `int`, prompts the user to enter a series of integers on the   terminal (with the value zero to stop), reads in these values using `std::cin`, and *appends* them to your vector using the   `push_back()` method until the value 0 is encountered. Your program should then report the number of elements in the vector,  their sum, and their product.
 
 *[🔍 check your answer](../../../../blob/2B_answers/examples/2B/vector/main.cpp)*
 
@@ -101,7 +101,7 @@ Write a program that declare a string called `name`. Initialise it to your own n
 
 ### String length
 
-▶️ Write a program that declare a string called `name`. Set its value by reading from the terminal (with a suitable prompt!  ), then use a single `std::cout` line to print out a message of the form:
+Write a program that declare a string called `name`. Set its value by reading from the terminal (with a suitable prompt!  ), then use a single `std::cout` line to print out a message of the form:
 ```
 The word "INPUT" contains 5 characters.
 ```
@@ -123,7 +123,7 @@ Write a program to prompt the user for a filename, then read the filename from s
 
 ### String formatting
 
-▶️ Write a program to declare the following variables:
+Write a program to declare the following variables:
 ```cpp
 std::string name = "joe";
 int age = 26;
