@@ -25,6 +25,7 @@ robot_final
 4B_test_class_constructors 4B_test_class_destructor 4B_test_class_copy_assignment
 4B_progress_meter
 4B_lorenz_attractor
+4B_OOP_design
 5A_negation_operator 5A_subscript_operator
 5A_student_insertion_operator 5A_student_friend_insertion_operator
 5A_matrix_class
