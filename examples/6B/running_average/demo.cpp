@@ -19,7 +19,7 @@ int main ()
 
 
   // set up the running average 'logger' object:
-  RunningAverage<float> logger;
+  RunningAverage<float,20> logger;
 
   std::vector<float> values, av_values;
   // generate random values and record them in the logger, while also recording
