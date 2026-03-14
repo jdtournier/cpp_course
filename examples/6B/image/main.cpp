@@ -4,10 +4,10 @@
 
 int main ()
 {
-  Image a;
+  Image<short> a;
   std::cout << "Image a: " << a << "\n";
 
-  Image b (10,10);
+  Image<short> b (10,10);
   std::cout << "Image b: " << b << "\n";
 
   std::cout << "a == b: " << (a==b) << "\n";

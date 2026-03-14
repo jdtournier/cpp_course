@@ -3,7 +3,7 @@
 #include <vector>
 #include <ostream>
 
-class Image {
+template <typename T> class Image {
   public:
     Image() = default;
     Image(const Image&) = default;
@@ -29,17 +29,17 @@ class Image {
     int width () const { return m_width; }
     int height () const { return m_height; }
 
-    int& operator() (int i, int j) { return m_data[i+m_width*j]; }
-    const int& operator() (int i, int j) const { return m_data[i+m_width*j]; }
+    T& operator() (int i, int j) { return m_data[i+m_width*j]; }
+    const T& operator() (int i, int j) const { return m_data[i+m_width*j]; }
 
   private:
-    std::vector<int> m_data;
+    std::vector<T> m_data;
     int m_width = 0, m_height = 0;
 };
 
 
 
-inline std::ostream& operator<< (std::ostream& stream, const Image& im)
+template <typename T> std::ostream& operator<< (std::ostream& stream, const Image<T>& im)
 {
   stream << im.width() << " x " << im.height();
   return stream;
