@@ -45,3 +45,52 @@ template <typename T> std::ostream& operator<< (std::ostream& stream, const Imag
   return stream;
 }
 
+
+// helper function: throw an exception is sizes of a & b don't match:
+template <typename T> void check_sizes_match (const Image<T>& a, const Image<T>& b) {
+  if (a.width() != b.width() || a.height() != b.height())
+    throw std::runtime_error ("size of images do not match");
+}
+
+template <typename T> Image<T> operator+ (const Image<T>& a, const Image<T>& b)
+{
+  check_sizes_match (a, b);
+  Image<T> c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) + b(i,j);
+  return c;
+}
+
+
+template <typename T> Image<T> operator- (const Image<T>& a, const Image<T>& b)
+{
+  check_sizes_match (a, b);
+  Image<T> c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) - b(i,j);
+  return c;
+}
+
+
+template <typename T> Image<T> operator* (const Image<T>& a, const Image<T>& b)
+{
+  check_sizes_match (a, b);
+  Image<T> c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) * b(i,j);
+  return c;
+}
+
+
+template <typename T> Image<T> operator/ (const Image<T>& a, const Image<T>& b)
+{
+  check_sizes_match (a, b);
+  Image<T> c (a.width(), a.height());
+  for (int j = 0; j < a.height(); j++)
+    for (int i = 0; i < a.width(); i++)
+      c(i,j) = a(i,j) / b(i,j);
+  return c;
+}
