@@ -5,6 +5,7 @@
 
 #include "noise.h"
 #include "filter/gain.h"
+#include "filter/offset.h"
 
 
 int main ()
@@ -17,12 +18,14 @@ int main ()
     signal.push_back (std::sin (0.2*n) + noise());
 
   GainFilter gain (2.0);
+  OffsetFilter offset (1.2);
 
   std::cout << gain.describe() << "\n";
+  std::cout << offset.describe() << "\n";
 
   std::vector<double> filtered;
   for (auto s : signal)
-    filtered.push_back (gain (s));
+    filtered.push_back (offset (gain (s)));
 
   termviz::figure()
     .plot (signal)
