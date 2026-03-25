@@ -7,6 +7,8 @@ class AverageFilter : public GenericFilter {
     AverageFilter (int width) :
       GenericFilter ("average"), m_buffer (width, 0.0), m_current (0) { }
 
+    std::string describe () const { return std::format ("{} (width: {})", m_name, m_buffer.size()); }
+
     double operator() (double s)
     {
       // add value to buffer and update index for next round:
