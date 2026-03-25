@@ -6,6 +6,7 @@
 #include "noise.h"
 #include "filter/gain.h"
 #include "filter/offset.h"
+#include "filter/clamp.h"
 
 
 int main ()
@@ -19,13 +20,15 @@ int main ()
 
   GainFilter gain (2.0);
   OffsetFilter offset (1.2);
+  ClampFilter clamp (0.9);
 
   std::cout << gain.describe() << "\n";
   std::cout << offset.describe() << "\n";
+  std::cout << clamp.describe() << "\n";
 
   std::vector<double> filtered;
   for (auto s : signal)
-    filtered.push_back (offset (gain (s)));
+    filtered.push_back (clamp (offset (gain (s))));
 
   termviz::figure()
     .plot (signal)
